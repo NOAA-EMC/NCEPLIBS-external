@@ -1,0 +1,24 @@
+[submodule "curl"]
+	path = curl
+	url = https://github.com/curl/curl.git
+[submodule "hdf5"]
+	path = hdf5
+	url = https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
+[submodule "jasper"]
+	path = jasper
+	url = https://github.com/mdadams/jasper.git
+[submodule "netcdf-c"]
+	path = netcdf-c
+	url = https://github.com/Unidata/netcdf-c.git
+[submodule "libpng"]
+	path = libpng
+	url = https://github.com/glennrp/libpng.git
+[submodule "netcdf-fortran"]
+	path = netcdf-fortran
+	url = https://github.com/Unidata/netcdf-fortran.git
+[submodule "zlib"]
+	path = zlib
+	url = https://github.com/madler/zlib.git
+[submodule "esmf"]
+	path = esmf
+	url = https://git.code.sf.net/p/esmf/esmf
