@@ -1,0 +1,187 @@
+cmake_minimum_required(VERSION 3.16)
+enable_language(Fortran)
+
+project(NCEPLIBS-third_party)
+
+find_package(MPI REQUIRED)
+option(BUILD_ALL "Build all libraries and don't search for system libraries" true)
+
+option(BUILD_ESMF "Build ESMF?" false)
+option(BUILD_NETCDF "Build NetCDF?" false)
+option(BUILD_JASPER "Build Jasper?" false)
+option(BUILD_PNG "Build libpng?" false)
+
+if(BUILD_ALL)
+  set(BUILD_NETCDF true)
+  set(BUILD_ESMF true)
+  set(BUILD_JASPER true)
+  set(BUILD_PNG true)
+else()
+  find_package(NetCDF)
+  find_package(ESMF)
+  find_package(Jasper)
+  find_pacakge(PNG)
+
+  if(NOT NETCDF_FOUND)
+    set(BUILD_NETCDF true)
+  endif()
+
+  if(NOT ESMF_FOUND)
+    set(BUILD_ESMF true)
+  endif()
+
+  if(NOT JASPER_FOUND)
+    set(BUILD_JASPER true)
+  endif()
+
+  if(NOT PNG_FOUND)
+    set(BUILD_PNG true)
+  endif()
+endif()
+
+set(install_path ${CMAKE_INSTALL_PREFIX}/third-party)
+
+include(ExternalProject)
+# Setting the <package_name>_ROOT variable tells CMake where to
+# look when using find_package
+
+if(BUILD_NETCDF OR BUILD_PNG)
+  #set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
+  ExternalProject_Add(zlib
+    PREFIX ${PROJECT_BINARY_DIR}/zlib  
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_BUILD_TYPE=RELEASE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/zlib  
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    )
+endif()
+
+if(BUILD_NETCDF)
+  # set(NETCDF ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
+  # set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
+
+  ExternalProject_Add(curl  
+    PREFIX ${PROJECT_BINARY_DIR}/curl  
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/third-party
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_USE_OPENSSL=False
+    -DHTTP_ONLY=True
+    -DCMAKE_BUILD_TYPE=RELEASE
+    -DCURL_CA_BUNDLE=none
+    -DCURL_CA_PATH=none
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/curl  
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    )
+
+  ExternalProject_Add(hdf5
+    PREFIX ${PROJECT_BINARY_DIR}/hdf5
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/third-party
+    -DCMAKE_CXX_COMPILER=${MPI_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
+    -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
+    -DHDF5_BUILD_FORTRAN:BOOL=ON
+    -DHDF5_BUILD_HL_LIB:BOOL=ON
+    -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON
+    -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF
+    -DCMAKE_BUILD_TYPE=RELEASE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/hdf5
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    )
+
+  ExternalProject_Add(netcdf  
+    PREFIX ${PROJECT_BINARY_DIR}/netcdf
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/third-party
+    -DCMAKE_CXX_COMPILER=${MPI_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
+    -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
+    -DHDF5_DIR=${CMAKE_INSTALL_PREFIX}
+    -DCMAKE_BUILD_TYPE=RELEASE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/netcdf-c    
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    DEPENDS hdf5
+    DEPENDS curl
+    DEPENDS zlib
+    )
+
+  set(NETCDF_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/libnetcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
+  ExternalProject_Add(netcdf-fortran  
+    PREFIX ${PROJECT_BINARY_DIR}/netcdf-fortran
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/third-party
+    -DCMAKE_CXX_COMPILER=${MPI_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
+    -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
+    -DnetCDF_INCLUDE_DIR=${CMAKE_INSTALL_PREFIX}/include
+    -DENABLE_TESTS=OFF
+    -DnetCDF_LIBRARIES=${NETCDF_LIBRARIES}
+    -DHDF5_DIR=${HDF5_DIR}
+    -DCMAKE_BUILD_TYPE=RELEASE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/netcdf-fortran    
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    DEPENDS netcdf
+    )
+
+endif()
+
+
+
+if(BUILD_PNG)
+  set(PNG_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
+  ExternalProject_Add(libpng
+    PREFIX ${PROJECT_BINARY_DIR}/libpng
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/third-party
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_BUILD_TYPE=RELEASE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/libpng
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    DEPENDS zlib
+    )
+endif()
+
+
+if(BUILD_JASPER)
+  set(Jasper_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
+  ExternalProject_Add(jasper
+    PREFIX ${PROJECT_BINARY_DIR}/jasper
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/third-party
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_BUILD_TYPE=RELEASE
+    -DJAS_ENABLE_DOC=FALSE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/jasper
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    )
+endif()
+
+
+if(BUILD_ESMF)
+  set(MPITYPE openmpi)
+  set(ENV{ESMFMKFILE} "${CMAKE_INSTALL_PREFIX}/third-party/lib/esmf.mk")
+  if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
+    set(comp "intel")
+  elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
+    set(comp "gfortran")
+  endif()
+
+  ExternalProject_Add(esmf
+    PREFIX ${PROJECT_BINARY_DIR}/esmf
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/esmf
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    BUILD_IN_SOURCE 1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} make
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/include ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/include ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/lib ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/bin make install
+    )
+  add_dependencies(third_party_libs esmf)
+endif()
+
