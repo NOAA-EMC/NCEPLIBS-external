@@ -22,3 +22,6 @@
 [submodule "esmf"]
 	path = esmf
 	url = https://git.code.sf.net/p/esmf/esmf
+[submodule "CMakeModules"]
+	path = CMakeModules
+	url = https://github.com/NOAA-EMC/CMakeModules.git

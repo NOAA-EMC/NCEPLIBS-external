@@ -1,33 +1,50 @@
 cmake_minimum_required(VERSION 3.16)
 enable_language(Fortran)
 
-project(NCEPLIBS-third_party)
+project(NCEPLIBS-external)
 
-find_package(MPI REQUIRED)
 option(BUILD_ALL "Build all libraries and don't search for system libraries" true)
+option(BUILD_MISSING "Build only the libraries that can't be found" false)
 
 option(BUILD_ESMF "Build ESMF?" false)
 option(BUILD_NETCDF "Build NetCDF?" false)
 option(BUILD_JASPER "Build Jasper?" false)
 option(BUILD_PNG "Build libpng?" false)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/Modules/")
+
+if(DEFINED BUILD_LIBS)
+  set(BUILD_ALL false)
+  set(BUILD_MISSING false)
+  # Make a CMake list out of comma-separated values and make them uppercase
+  string(REPLACE "," ";" libs_to_build "${BUILD_LIBS}")
+  string(TOUPPER "${libs_to_build}" libs_to_build)
+  foreach(lib ${libs_to_build})
+    if(DEFINED ${BUILD_${lib}})
+      set(${BUILD_${lib}} true)
+    endif()
+  endforeach()  
+endif()
+
 if(BUILD_ALL)
   set(BUILD_NETCDF true)
   set(BUILD_ESMF true)
   set(BUILD_JASPER true)
   set(BUILD_PNG true)
-else()
+endif()
+
+if(BUILD_MISSING)
   find_package(NetCDF)
   find_package(ESMF)
   find_package(Jasper)
-  find_pacakge(PNG)
+  find_package(PNG)
 
   if(NOT NETCDF_FOUND)
     set(BUILD_NETCDF true)
   endif()
 
   if(NOT ESMF_FOUND)
-    set(BUILD_ESMF true)
+      set(BUILD_ESMF true)
   endif()
 
   if(NOT JASPER_FOUND)
@@ -39,14 +56,19 @@ else()
   endif()
 endif()
 
+
+ if(NOT DEFINED MPITYPE AND BUILD_ESMF)
+   message("Error: Building ESMF and MPITYPE is not set.")
+   message("Valid options are: intelmpi, openmpi, mpich, mpich2, lam")
+   message(FATAL_ERROR "To set on the command line use `cmake .. <options> -DMPITYPE=openmpi`")
+ endif()
+
+find_package(MPI REQUIRED)
 set(install_path ${CMAKE_INSTALL_PREFIX}/third-party)
 
 include(ExternalProject)
-# Setting the <package_name>_ROOT variable tells CMake where to
-# look when using find_package
 
 if(BUILD_NETCDF OR BUILD_PNG)
-  #set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
   ExternalProject_Add(zlib
     PREFIX ${PROJECT_BINARY_DIR}/zlib  
     CMAKE_ARGS
@@ -60,9 +82,6 @@ if(BUILD_NETCDF OR BUILD_PNG)
 endif()
 
 if(BUILD_NETCDF)
-  # set(NETCDF ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
-  # set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
-
   ExternalProject_Add(curl  
     PREFIX ${PROJECT_BINARY_DIR}/curl  
     CMAKE_ARGS
@@ -110,7 +129,6 @@ if(BUILD_NETCDF)
     DEPENDS zlib
     )
 
-  set(NETCDF_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/libnetcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
   ExternalProject_Add(netcdf-fortran  
     PREFIX ${PROJECT_BINARY_DIR}/netcdf-fortran
     CMAKE_ARGS
@@ -127,13 +145,10 @@ if(BUILD_NETCDF)
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     DEPENDS netcdf
     )
-
 endif()
 
 
-
 if(BUILD_PNG)
-  set(PNG_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
   ExternalProject_Add(libpng
     PREFIX ${PROJECT_BINARY_DIR}/libpng
     CMAKE_ARGS
@@ -149,7 +164,6 @@ endif()
 
 
 if(BUILD_JASPER)
-  set(Jasper_ROOT ${CMAKE_INSTALL_PREFIX}/third-party PARENT_SCOPE)
   ExternalProject_Add(jasper
     PREFIX ${PROJECT_BINARY_DIR}/jasper
     CMAKE_ARGS
@@ -165,8 +179,6 @@ endif()
 
 
 if(BUILD_ESMF)
-  set(MPITYPE openmpi)
-  set(ENV{ESMFMKFILE} "${CMAKE_INSTALL_PREFIX}/third-party/lib/esmf.mk")
   if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
     set(comp "intel")
   elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
@@ -182,6 +194,5 @@ if(BUILD_ESMF)
     BUILD_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} make
     INSTALL_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/include ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/include ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/lib ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/bin make install
     )
-  add_dependencies(third_party_libs esmf)
 endif()
 
