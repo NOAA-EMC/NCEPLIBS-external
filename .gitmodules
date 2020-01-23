@@ -24,4 +24,4 @@
 	url = https://git.code.sf.net/p/esmf/esmf
 [submodule "CMakeModules"]
 	path = CMakeModules
-	url = https://github.com/NOAA-EMC/CMakeModules.git
+	url = https://github.com/kgerheiser/CMakeModules
