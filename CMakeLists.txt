@@ -18,6 +18,7 @@ option(BUILD_JPEG "Build libjpeg?" false)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/Modules/")
 
+
 if(DEFINED BUILD_LIBS)
   set(BUILD_ALL false)
   set(BUILD_MISSING false)
@@ -39,6 +40,7 @@ if(BUILD_ALL)
   set(BUILD_PNG true)
   set(BUILD_JPEG true)
 endif()
+
 
 if(BUILD_MISSING)
   find_package(NetCDF)
@@ -72,6 +74,17 @@ endif()
 if(NOT DEFINED MPITYPE AND BUILD_ESMF)
   message(FATAL_ERROR "Error: Building ESMF and MPITYPE is not set. Valid options are: intelmpi, openmpi, mpich, mpich2, lam. To set on the command line add '-DMPITYPE=<mpi_type>'")
 endif()
+
+
+set(libs "NETCDF" "ESMF" "JASPER" "PNG" "JPEG")
+set(libs_to_build)
+foreach(lib ${libs})
+  if(BUILD_${lib})
+    list(APPEND libs_to_build ${lib})
+  endif()
+endforeach()
+
+message("Building libraries: " ${libs_to_build})
 
 
 find_package(MPI REQUIRED)
@@ -179,6 +192,20 @@ if(BUILD_PNG)
 endif()
 
 
+if(BUILD_JPEG OR BUILD_JASPER)
+   ExternalProject_Add(libjpeg
+    PREFIX ${PROJECT_BINARY_DIR}/libpng
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_BUILD_TYPE=RELEASE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/libjpeg
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    )
+endif()
+
+
 if(BUILD_JASPER)
   ExternalProject_Add(jasper
     PREFIX ${PROJECT_BINARY_DIR}/jasper
@@ -190,6 +217,7 @@ if(BUILD_JASPER)
     -DJAS_ENABLE_DOC=FALSE
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/jasper
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    DEPENDS libjpeg
     )
 endif()
 
