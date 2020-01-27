@@ -28,3 +28,6 @@
 [submodule "libjpeg"]
 	path = libjpeg
 	url = https://github.com/LuaDist/libjpeg
+[submodule "cmake"]
+	path = cmake
+	url = https://github.com/kgerheiser/CMakeModules
