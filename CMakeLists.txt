@@ -84,7 +84,7 @@ foreach(lib ${libs})
   endif()
 endforeach()
 
-message("Building libraries: " ${libs_to_build})
+message(STATUS "Building libraries: " ${libs_to_build})
 
 
 find_package(MPI REQUIRED)
