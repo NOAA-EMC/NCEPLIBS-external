@@ -80,7 +80,7 @@ set(libs "NETCDF" "ESMF" "JASPER" "PNG" "JPEG")
 set(libs_to_build)
 foreach(lib ${libs})
   if(BUILD_${lib})
-    list(APPEND libs_to_build ${lib})
+    list(APPEND libs_to_build "${lib} ")
   endif()
 endforeach()
 
