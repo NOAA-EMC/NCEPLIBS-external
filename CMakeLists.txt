@@ -16,7 +16,7 @@ option(BUILD_JASPER "Build Jasper?" false)
 option(BUILD_PNG "Build libpng?" false)
 option(BUILD_JPEG "Build libjpeg?" false)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
 if(DEFINED BUILD_LIBS)
