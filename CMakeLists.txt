@@ -7,7 +7,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "default install path" FORCE )
 endif()
 
-option(BUILD_ALL "Build all libraries and don't search for system libraries" true)
+option(BUILD_ALL "Build all libraries and don't search for system libraries" false)
 option(BUILD_MISSING "Build only the libraries that can't be found" false)
 
 option(BUILD_ESMF "Build ESMF?" false)
@@ -18,19 +18,24 @@ option(BUILD_JPEG "Build libjpeg?" false)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-
 if(DEFINED BUILD_LIBS)
-  set(BUILD_ALL false)
-  set(BUILD_MISSING false)
+  if(BUILD_ALL OR BUILD_MISSING)
+    message (FATAL_ERROR "Can either use BUILD_LIBS or BUILD_ALL or BUILD_MISSING")
+  endif()
   # Make a CMake list out of comma-separated values and make them uppercase
   string(REPLACE "," ";" libs_to_build "${BUILD_LIBS}")
   string(TOUPPER "${libs_to_build}" libs_to_build)
-  
   foreach(lib ${libs_to_build})
     if(DEFINED BUILD_${lib})
       set(BUILD_${lib} true)
     endif()
-  endforeach()  
+  endforeach()
+else()
+  if(BUILD_ALL AND BUILD_MISSING)
+    message (FATAL_ERROR "Can either use BUILD_ALL or BUILD_MISSING, not both")
+  elseif(NOT BUILD_ALL AND NOT BUILD_MISSING)
+    message (FATAL_ERROR "Set either BUILD_ALL or BUILD_MISSING or BUILD_LIBS")
+  endif()
 endif()
 
 if(BUILD_ALL)
@@ -75,7 +80,6 @@ if(NOT DEFINED MPITYPE AND BUILD_ESMF)
   message(FATAL_ERROR "Error: Building ESMF and MPITYPE is not set. Valid options are: intelmpi, openmpi, mpich, mpich2, lam. To set on the command line add '-DMPITYPE=<mpi_type>'")
 endif()
 
-
 set(libs "NETCDF" "ESMF" "JASPER" "PNG" "JPEG")
 set(libs_to_build)
 foreach(lib ${libs})
@@ -95,26 +99,25 @@ include(GNUInstallDirs)
 
 if(BUILD_NETCDF OR BUILD_PNG)
   ExternalProject_Add(zlib
-    PREFIX ${PROJECT_BINARY_DIR}/zlib  
+    PREFIX ${PROJECT_BINARY_DIR}/zlib
     CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
     -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
     -DCMAKE_BUILD_TYPE=RELEASE
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/zlib  
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/zlib
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
 endif()
 
 if(BUILD_NETCDF)
-  
   # This is where the libraries will be
   set(NETCDF_INCLUDES ${CMAKE_INSTALL_PREFIX}/include)
   set(NETCDF_LIBRARIES_C ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdf${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(NETCDF_LIBRARIES_Fortran ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}netcdff${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(NETCDF_LIBRARIES "${NETCDF_LIBRARIES_Fortran} ${NETCDF_LIBRARIES_C}")
-  
-  ExternalProject_Add(curl  
-    PREFIX ${PROJECT_BINARY_DIR}/curl  
+
+  ExternalProject_Add(curl
+    PREFIX ${PROJECT_BINARY_DIR}/curl
     CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
     -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
@@ -124,7 +127,7 @@ if(BUILD_NETCDF)
     -DCMAKE_BUILD_TYPE=RELEASE
     -DCURL_CA_BUNDLE=none
     -DCURL_CA_PATH=none
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/curl  
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/curl
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
 
@@ -144,7 +147,7 @@ if(BUILD_NETCDF)
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
 
-  ExternalProject_Add(netcdf  
+  ExternalProject_Add(netcdf
     PREFIX ${PROJECT_BINARY_DIR}/netcdf
     CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
@@ -152,14 +155,14 @@ if(BUILD_NETCDF)
     -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
     -DHDF5_DIR=${CMAKE_INSTALL_PREFIX}
     -DCMAKE_BUILD_TYPE=RELEASE
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/netcdf-c    
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/netcdf-c
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     DEPENDS hdf5
     DEPENDS curl
     DEPENDS zlib
     )
 
-  ExternalProject_Add(netcdf-fortran  
+  ExternalProject_Add(netcdf-fortran
     PREFIX ${PROJECT_BINARY_DIR}/netcdf-fortran
     CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
@@ -170,12 +173,11 @@ if(BUILD_NETCDF)
     -DNETCDF_C_LIBRARY=${NETCDF_LIBRARIES_C}
     -DNETCDF_INCLUDE_DIR=${CMAKE_INSTALL_PREFIX}/include
     -DCMAKE_BUILD_TYPE=RELEASE
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/netcdf-fortran    
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/netcdf-fortran
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     DEPENDS netcdf
     )
 endif()
-
 
 if(BUILD_PNG)
   ExternalProject_Add(libpng
@@ -191,7 +193,6 @@ if(BUILD_PNG)
     )
 endif()
 
-
 if(BUILD_JPEG OR BUILD_JASPER)
    ExternalProject_Add(libjpeg
     PREFIX ${PROJECT_BINARY_DIR}/libpng
@@ -204,7 +205,6 @@ if(BUILD_JPEG OR BUILD_JASPER)
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
 endif()
-
 
 if(BUILD_JASPER)
   ExternalProject_Add(jasper
@@ -221,7 +221,6 @@ if(BUILD_JASPER)
     )
 endif()
 
-
 if(BUILD_ESMF)
   if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
     set(comp "intel")
@@ -233,7 +232,7 @@ if(BUILD_ESMF)
     add_custom_target(netcdf-fortran)
     find_package(NetCDF REQUIRED)
   endif()
-    
+
   ExternalProject_Add(esmf
     PREFIX ${PROJECT_BINARY_DIR}/esmf
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/esmf
@@ -243,6 +242,6 @@ if(BUILD_ESMF)
     BUILD_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} make
     INSTALL_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR} ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/mod ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} make install
     DEPENDS netcdf-fortran)
-  
+
   endif()
 
