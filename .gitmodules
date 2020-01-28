@@ -31,3 +31,4 @@
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/kgerheiser/CMakeModules
+	branch = ufs_release_v1.0
