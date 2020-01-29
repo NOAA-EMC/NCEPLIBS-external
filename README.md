@@ -20,12 +20,14 @@ It inclues the following libraries:
 cd NCEPLIBS-external
 mkdir build
 cd build
-cmake .. <options>
+cmake .. -DBUILD_<ALL,MISSING>=true -DMPITYPE=<openmpi,intelmpi,mpt,etc>
 make <-jx>
 ```
 
-By default it will build all the libraries. However, the built libraries can be controlled in several ways by passing options to CMake through the command-line.
+To build all libraries pass `-DBUILD_ALL=true` when invoking CMake
 
 To build only libraries that can't be found pass the option: `-DBUILD_MISSING=true`
 
 To manualy specify the libraries to build pass a comma separated list to the option`-DBUILD_LIBS=esmf,netcdf,jasper`
+
+To set the MPI type (if building ESMF) pass `-DMPITYPE=<openmpi,intelmpi,mpt,etc>`
