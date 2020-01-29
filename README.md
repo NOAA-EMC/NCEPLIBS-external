@@ -17,7 +17,9 @@ It inclues the following libraries:
 # Building
 
 ```
+git clone <url>
 cd NCEPLIBS-external
+git submodule update --init --recursive
 mkdir build
 cd build
 cmake .. -DBUILD_<ALL,MISSING>=true -DMPITYPE=<openmpi,intelmpi,mpt,etc>
