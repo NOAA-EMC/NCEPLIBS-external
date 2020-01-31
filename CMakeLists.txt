@@ -15,10 +15,6 @@ option(BUILD_JPEG "Build libjpeg?" ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-if(NOT DEFINED MPITYPE AND BUILD_ESMF)
-  message(FATAL_ERROR "Error: Building ESMF and MPITYPE is not set. Valid options are: intelmpi, openmpi, mpich, mpich2, lam. To set on the command line add '-DMPITYPE=<mpi_type>'")
-endif()
-
 set(libs "NETCDF" "ESMF" "JASPER" "PNG" "JPEG")
 set(libs_to_build)
 foreach(lib ${libs})
@@ -29,8 +25,24 @@ endforeach()
 
 message(STATUS "Building libraries: " ${libs_to_build})
 
-
+set(MPI_DETERMINE_LIBRARY_VERSION true)
 find_package(MPI REQUIRED)
+
+if(NOT DEFINED MPITYPE AND BUILD_ESMF)
+  if(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*MPICH.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
+    set(MPITYPE "mpich3")
+  elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*Open MPI.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
+    set(MPITYPE "openmpi")
+  elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*HPE MPT.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
+    set(MPITYPE "mpt")
+  elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*Intel.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
+    set(MPITYPE "intelmpi")
+  else()
+    message(FATAL_ERROR "Cannot detect MPI type for ESMF, check that it is supported and set it via -DMPITYPE=... ; calid options are: intelmpi, openmpi, mpich3, mpt, openmpi")
+  endif()
+  message(STATUS "Set ESMF MPITYPE to ${MPITYPE}")
+endif()
+
 set(install_path ${CMAKE_INSTALL_PREFIX})
 
 include(ExternalProject)
