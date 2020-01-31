@@ -22,13 +22,10 @@
 [submodule "esmf"]
 	path = esmf
 	url = https://git.code.sf.net/p/esmf/esmf
-[submodule "CMakeModules"]
-	path = CMakeModules
-	url = https://github.com/kgerheiser/CMakeModules
 [submodule "libjpeg"]
 	path = libjpeg
 	url = https://github.com/LuaDist/libjpeg
 [submodule "cmake"]
 	path = cmake
-	url = https://github.com/kgerheiser/CMakeModules
-	branch = ufs_release_v1.0
+	url = https://github.com/NOAA-EMC/CMakeModules
+	branch = release/public-v1
