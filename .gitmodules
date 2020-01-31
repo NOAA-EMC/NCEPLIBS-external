@@ -25,6 +25,9 @@
 [submodule "libjpeg"]
 	path = libjpeg
 	url = https://github.com/LuaDist/libjpeg
+[submodule "cmake-src"]
+	path = cmake-src
+	url = https://github.com/Kitware/CMake
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/NOAA-EMC/CMakeModules
