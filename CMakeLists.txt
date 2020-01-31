@@ -7,74 +7,13 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "default install path" FORCE )
 endif()
 
-option(BUILD_ALL "Build all libraries and don't search for system libraries" false)
-option(BUILD_MISSING "Build only the libraries that can't be found" false)
-
-option(BUILD_ESMF "Build ESMF?" false)
-option(BUILD_NETCDF "Build NetCDF?" false)
-option(BUILD_JASPER "Build Jasper?" false)
-option(BUILD_PNG "Build libpng?" false)
-option(BUILD_JPEG "Build libjpeg?" false)
+option(BUILD_ESMF "Build ESMF?" ON)
+option(BUILD_NETCDF "Build NetCDF?" ON)
+option(BUILD_JASPER "Build Jasper?" ON)
+option(BUILD_PNG "Build libpng?" ON)
+option(BUILD_JPEG "Build libjpeg?" ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-
-if(DEFINED BUILD_LIBS)
-  if(BUILD_ALL OR BUILD_MISSING)
-    message (FATAL_ERROR "Can either use BUILD_LIBS or BUILD_ALL or BUILD_MISSING")
-  endif()
-  # Make a CMake list out of comma-separated values and make them uppercase
-  string(REPLACE "," ";" libs_to_build "${BUILD_LIBS}")
-  string(TOUPPER "${libs_to_build}" libs_to_build)
-  foreach(lib ${libs_to_build})
-    if(DEFINED BUILD_${lib})
-      set(BUILD_${lib} true)
-    endif()
-  endforeach()
-else()
-  if(BUILD_ALL AND BUILD_MISSING)
-    message (FATAL_ERROR "Can either use BUILD_ALL or BUILD_MISSING, not both")
-  elseif(NOT BUILD_ALL AND NOT BUILD_MISSING)
-    message (FATAL_ERROR "Set either BUILD_ALL or BUILD_MISSING or BUILD_LIBS")
-  endif()
-endif()
-
-if(BUILD_ALL)
-  set(BUILD_NETCDF true)
-  set(BUILD_ESMF true)
-  set(BUILD_JASPER true)
-  set(BUILD_PNG true)
-  set(BUILD_JPEG true)
-endif()
-
-
-if(BUILD_MISSING)
-  find_package(NetCDF)
-  find_package(ESMF)
-  find_package(Jasper)
-  find_package(PNG)
-  find_package(JPEG)
-
-  if(NOT NETCDF_FOUND)
-    set(BUILD_NETCDF true)
-  endif()
-
-  if(NOT ESMF_FOUND)
-    set(BUILD_ESMF true)
-  endif()
-
-  if(NOT JASPER_FOUND)
-    set(BUILD_JASPER true)
-  endif()
-
-  if(NOT PNG_FOUND)
-    set(BUILD_PNG true)
-  endif()
-
-  if(NOT JPEG_FOUND)
-    set(BUILD_JPEG true)
-  endif()
-endif()
-
 
 if(NOT DEFINED MPITYPE AND BUILD_ESMF)
   message(FATAL_ERROR "Error: Building ESMF and MPITYPE is not set. Valid options are: intelmpi, openmpi, mpich, mpich2, lam. To set on the command line add '-DMPITYPE=<mpi_type>'")
@@ -243,5 +182,4 @@ if(BUILD_ESMF)
     INSTALL_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR} ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/mod ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} make install
     DEPENDS netcdf-fortran)
 
-  endif()
-
+endif()
