@@ -10,16 +10,17 @@ This is a compilation of third-party libraries required to build NCEPLIBS and by
 
 It inclues the following libraries:
 
-1. MPI: openmpi-4.0.2
-2. zlib: zlib-1.2.11
-3. HDF5: hdf5-1.10.4
-4. NetCDF: netcdf-c-4.7.3, netcdf-fortran-4.5.2
-5. libpng: libpng-1.6.35
-6. libjpeg: jpeg-9.1
-7. Jasper: jasper-2.0.16
-8. WGRIB2: wgrib-2.0.8
-9. ESMF: esmf-8.0.0
-10. (optional) CMake: cmake-3.16.3
+1. CMake: cmake-3.16.3
+2. MPI: openmpi-4.0.2
+3. zlib: zlib-1.2.11
+4. HDF5: hdf5-1.10.4
+5. NetCDF: netcdf-c-4.7.3, netcdf-fortran-4.5.2
+6. libpng: libpng-1.6.35
+7. libjpeg: jpeg-9.1
+8. Jasper: jasper-2.0.16
+9. WGRIB2: wgrib-2.0.8
+10. ESMF: esmf-8.0.0
+
 
 ## Building
 
@@ -39,21 +40,32 @@ By default, NCEPLIBS-external will build and install all libraries listed above 
 Users working on HPC systems should use the MPI libraries installed by the system administrators for the compiler they want to use. Usually compilers and MPI libraries can be loaded as modules on those systems. If other dependencies such as netCDF are also provided as modules for the target compiler, then these should also be used. In this case, users need to turn off explicitly the build of those libraries as follows:
 
 *How to turn off building ...*
-1. MPI: Add `-DBUILD_MPI=OFF` to the cmake flags. If CMake cannot find the MPI library, make sure that the wrappers `mpicc` and `mpif90` are in the `PATH` environment variable, and set the environment variable `MPI_ROOT` to the directory where MPI was installed.
-2. zlib: zlib will be built as dependency for NetCDF or libpng. If neither of those is built, the zlib build is also turned off.
-3. HDF5: will be built as dependency for NetCDF.  If netCDF is not built, the HDF5 build is also turned off.
-4. NetCDF: Add `-DBUILD_NETCDF=OFF` to the cmake flags. If CMake cannot find the netCDF/netCDF Fortran library, set the environment variable `NETCDF` to the directory where NetCDF was installed. On some systems, the netCDF-c and netCDF-fortran libraries are installed in separate locations. In this case, set set the environment variable `NETCDF` to the directory where netcdf-c was installed, and `NETCDF_FORTRAN` to the directory where netcdf-fortran was installed.
-5. libpng: Add `-DBUILD_PNG=OFF` to the cmake flags. If CMake cannot find the libpng library, set the environment variable `LIBPNG_ROOT` to the directory where libpng was installed.
-6. libjpeg: libjpeg will be built as dependency for Jasper. If Jasper is not built, the libjpeg build is also turned off.
-7. Jasper: Add `-DBUILD_JASPER=OFF` to the cmake flags. If CMake cannot find the Jasper library, set the environment variable `JASPER_ROOT` to the directory where Jasper was installed.
-8. WGRIB2: Add `-DBUILD_WGRIB2=OFF` to the cmake flags. If CMake cannot find the WGRIB2 Fortran modules or library, set the environment variable `WGRIB2_ROOT` to the directory where WGRIB2 was installed. Note that WGRIB2 installations vary between systems. For the NCEPLIBS build to work, the WGRIB2 Fortran modules are expected in `WGRIB2_ROOT/include` and the WGRIB2 library in `WGRIB2_ROOT/lib`.
-9. ESMF: Add `-DBUILD_ESMF=OFF` to the cmake flags and set the environment variable `ESMFMKFILE` to point to the file `esmf.mk` of the ESMF installation.
+
+1. CMake: not necessary, CMake is installed in a separate step only if the default OS version is too old (see below).
+
+2. MPI: Add `-DBUILD_MPI=OFF` to the cmake flags. If CMake cannot find the MPI library, make sure that the wrappers `mpicc` and `mpif90` are in the `PATH` environment variable, and set the environment variable `MPI_ROOT` to the directory where MPI was installed.
+
+3. zlib: zlib will be built as dependency for NetCDF or libpng. If neither of those is built, the zlib build is also turned off.
+
+4. HDF5: will be built as dependency for NetCDF.  If netCDF is not built, the HDF5 build is also turned off.
+
+5. NetCDF: Add `-DBUILD_NETCDF=OFF` to the cmake flags. If CMake cannot find the netCDF/netCDF Fortran library, set the environment variable `NETCDF` to the directory where NetCDF was installed. On some systems, the netCDF-c and netCDF-fortran libraries are installed in separate locations. In this case, set set the environment variable `NETCDF` to the directory where netcdf-c was installed, and `NETCDF_FORTRAN` to the directory where netcdf-fortran was installed.
+
+6. libpng: Add `-DBUILD_PNG=OFF` to the cmake flags. If CMake cannot find the libpng library, set the environment variable `LIBPNG_ROOT` to the directory where libpng was installed.
+
+7. libjpeg: libjpeg will be built as dependency for Jasper. If Jasper is not built, the libjpeg build is also turned off.
+
+8. Jasper: Add `-DBUILD_JASPER=OFF` to the cmake flags. If CMake cannot find the Jasper library, set the environment variable `JASPER_ROOT` to the directory where Jasper was installed.
+
+9. WGRIB2: Add `-DBUILD_WGRIB2=OFF` to the cmake flags. If CMake cannot find the WGRIB2 Fortran modules or library, set the environment variable `WGRIB2_ROOT` to the directory where WGRIB2 was installed. Note that WGRIB2 installations vary between systems. For the NCEPLIBS build to work, the WGRIB2 Fortran modules are expected in `WGRIB2_ROOT/include` and the WGRIB2 library in `WGRIB2_ROOT/lib`.
+
+10. ESMF: Add `-DBUILD_ESMF=OFF` to the cmake flags and set the environment variable `ESMFMKFILE` to point to the file `esmf.mk` of the ESMF installation.
 
 The above options to turn off selected components can also be used by advanced users who already have parts of the software stack installed for the UFS.
 
 ## Requirements
 
-1. CMake version 3.12 or newer. If the `cmake` command above fails because the existing CMake version is too old, you need to install a newer version. The NCEPLIBS-external code contains
+1. CMake version 3.14 or newer. If the `cmake` command above fails because the existing CMake version is too old, you need to install a newer version. The NCEPLIBS-external code contains
 `cmake-3.16.3` in subdirectory `cmake-src`. To install this version:
 ```
 cd ../cmake-src # assuming you are still in the build directory
