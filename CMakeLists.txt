@@ -12,6 +12,7 @@ if(POLICY CMP0074)
   cmake_policy(SET CMP0074 NEW)
 endif(POLICY CMP0074)
 
+option(BUILD_MPI "Build MPI?" ON)
 option(BUILD_ESMF "Build ESMF?" ON)
 option(BUILD_NETCDF "Build NetCDF?" ON)
 option(BUILD_JASPER "Build Jasper?" ON)
@@ -21,7 +22,7 @@ option(BUILD_WGRIB2 "Build wgrib2?" ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-set(libs "NETCDF" "ESMF" "JASPER" "PNG" "JPEG" "WGRIB2")
+set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "JPEG" "WGRIB2")
 set(libs_to_build)
 foreach(lib ${libs})
   if(BUILD_${lib})
@@ -31,8 +32,29 @@ endforeach()
 
 message(STATUS "Building libraries: " ${libs_to_build})
 
-set(MPI_DETERMINE_LIBRARY_VERSION true)
-find_package(MPI REQUIRED)
+set(install_path ${CMAKE_INSTALL_PREFIX})
+
+include(ExternalProject)
+include(GNUInstallDirs)
+
+if(BUILD_MPI)
+  ExternalProject_Add(mpi
+    PREFIX ${PROJECT_BINARY_DIR}/openmpi
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/openmpi
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    BUILD_IN_SOURCE 1
+    DOWNLOAD_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && ${PROJECT_SOURCE_DIR}/openmpi/extract.sh ${PROJECT_SOURCE_DIR}/openmpi
+    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && ./configure --prefix=${CMAKE_INSTALL_PREFIX}
+    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && $(MAKE) && $(MAKE) check
+    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && $(MAKE) install
+    )
+  set(MPI_ROOT ${CMAKE_INSTALL_PREFIX})
+  set(MPI_C_LIBRARY_VERSION_STRING "Open MPI")
+  set(MPI_C_VERSION_MAJOR "3")
+else()
+  set(MPI_DETERMINE_LIBRARY_VERSION true)
+  find_package(MPI REQUIRED)
+endif()
 
 if(NOT DEFINED MPITYPE AND BUILD_ESMF)
   if(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*MPICH.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
@@ -48,11 +70,6 @@ if(NOT DEFINED MPITYPE AND BUILD_ESMF)
   endif()
   message(STATUS "Set ESMF MPITYPE to ${MPITYPE}")
 endif()
-
-set(install_path ${CMAKE_INSTALL_PREFIX})
-
-include(ExternalProject)
-include(GNUInstallDirs)
 
 if(BUILD_NETCDF OR BUILD_PNG)
   ExternalProject_Add(zlib
@@ -199,6 +216,10 @@ if(BUILD_ESMF)
     find_package(NetCDF REQUIRED)
   endif()
 
+  if(BUILD_MPI)
+    add_custom_target(mpi)
+  endif()
+
   ExternalProject_Add(esmf
     PREFIX ${PROJECT_BINARY_DIR}/esmf
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/esmf
@@ -207,5 +228,5 @@ if(BUILD_ESMF)
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} $(MAKE)
     INSTALL_COMMAND ${CMAKE_COMMAND} -E env ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR} ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/mod ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} $(MAKE) install
-    DEPENDS netcdf-fortran)
+    DEPENDS mpi netcdf-fortran)
 endif()
