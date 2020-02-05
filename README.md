@@ -10,15 +10,16 @@ This is a compilation of third-party libraries required to build NCEPLIBS and by
 
 It inclues the following libraries:
 
-1. NetCDF: netcdf-c-4.7.3, netcdf-fortran-4.5.2
-2. ESMF: esmf-8.0.0
+1. MPI: openmpi-4.0.2
+2. zlib: zlib-1.2.11
 3. HDF5: hdf5-1.10.4
-4. curl: curl-7.63.0
-5. zlib: zlib-1.2.11
-6. Jasper: jasper-2.0.16
-7. libpng: libpng-1.6.35
-8. libjpeg: jpeg-9.1
-9. (optional) CMake: cmake-3.16.3
+4. NetCDF: netcdf-c-4.7.3, netcdf-fortran-4.5.2
+5. libpng: libpng-1.6.35
+6. libjpeg: jpeg-9.1
+7. Jasper: jasper-2.0.16
+8. WGRIB2: wgrib-2.0.8
+9. ESMF: esmf-8.0.0
+10. (optional) CMake: cmake-3.16.3
 
 ## Building
 
@@ -31,7 +32,24 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=INSERT_PATH_HERE ..
 make <-jx>
 ```
-If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build`` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks.
+If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks.
+
+By default, NCEPLIBS-external will build and install all libraries listed above except the optional CMake (see next section when this is needed). This is primarily targeted for users who are setting up their own workstations in order to get a consistent software stack. It is important that the MPI wrappers use the same compiler that is used to compile the other external libraries, the NCEP libraries and any UFS application that depends on those. 
+
+Users working on HPC systems should use the MPI libraries installed by the system administrators for the compiler they want to use. Usually compilers and MPI libraries can be loaded as modules on those systems. If other dependencies such as netCDF are also provided as modules for the target compiler, then these should also be used. In this case, users need to turn off explicitly the build of those libraries as follows:
+
+*How to turn off building ...*
+1. MPI: Add `-DBUILD_MPI=OFF` to the cmake flags. If CMake cannot find the MPI library, make sure that the wrappers `mpicc` and `mpif90` are in the `PATH` environment variable, and set the environment variable `MPI_ROOT` to the directory where MPI was installed.
+2. zlib: zlib will be built as dependency for NetCDF or libpng. If neither of those is built, the zlib build is also turned off.
+3. HDF5: will be built as dependency for NetCDF.  If netCDF is not built, the HDF5 build is also turned off.
+4. NetCDF: Add `-DBUILD_NETCDF=OFF` to the cmake flags. If CMake cannot find the netCDF/netCDF Fortran library, set the environment variable `NETCDF` to the directory where NetCDF was installed. On some systems, the netCDF-c and netCDF-fortran libraries are installed in separate locations. In this case, set set the environment variable `NETCDF` to the directory where netcdf-c was installed, and `NETCDF_FORTRAN` to the directory where netcdf-fortran was installed.
+5. libpng: Add `-DBUILD_LIBPNG=OFF` to the cmake flags. If CMake cannot find the libpng library, set the environment variable `LIBPNG_ROOT` to the directory where libpng was installed.
+6. libjpeg: libjpeg will be built as dependency for Jasper. If Jasper is not built, the libjpeg build is also turned off.
+7. Jasper: Add `-DBUILD_JASPER=OFF` to the cmake flags. If CMake cannot find the Jasper library, set the environment variable `JASPER_ROOT` to the directory where Jasper was installed.
+8. WGRIB2: Add `-DBUILD_WGRIB2=OFF` to the cmake flags. If CMake cannot find the WGRIB2 Fortran modules or library, set the environment variable `WGRIB2_ROOT` to the directory where WGRIB2 was installed. Note that WGRIB2 installations vary between systems. For the NCEPLIBS build to work, the WGRIB2 Fortran modules are expected in `WGRIB2_ROOT/include` and the WGRIB2 library in `WGRIB2_ROOT/lib`.
+9. ESMF: Add `-DBUILD_ESMF=OFF` to the cmake flags and set the environment variable `ESMFMKFILE` to point to the file `esmf.mk` of the ESMF installation.
+
+The above options to turn off selected components can also be used by advanced users who already have parts of the software stack installed for the UFS.
 
 ## Requirements
 
@@ -54,7 +72,7 @@ For building NCEPLIBS-external, use `/full_path_to_where_you_installed_cmake/bin
 | Intel           | 18.0.3.222, 18.0.5.274, 19.0.2.187, 19.0.5.281             |
 | GNU             | 8.3.0, 9.1.0, 9.2.0                                        |
 
-3. A supported MPI library, see table below. Other versions may work, in particular if close to the versions listed below. It is recommended to compile the MPI library with the same compilers used to compile NCEPLIBS-external.
+3. A supported MPI library unless installed as part of NCEPLIBS-external, see table below. Other versions may work, in particular if close to the versions listed below. It is recommended to compile the MPI library with the same compilers used to compile NCEPLIBS-external.
 
 | MPI library     | Supported (tested) versions                                |
 |-----------------|------------------------------------------------------------|
@@ -70,7 +88,7 @@ For building NCEPLIBS-external, use `/full_path_to_where_you_installed_cmake/bin
 
 2. The build fails because of undefined symbols in any of the libraries. The most likely reason for this error is that cmake found a different version of the library on the system, for example installed by the Linux package manager or homebrew on macOS. While there is no single solution for this problem, the following options have been used successfully:
     - Remove the existing library, if possible (often it is not, because other software on the system depends on it)
-    - Take the existing library out of the `PATH` and `LD_LIBRARY_PATH`, if possible (not always, because other software installed in the same location, may be needed)
+    - Take the existing library out of the `PATH` and `LD_LIBRARY_PATH`, if possible (not always, because other software installed in the same location, may be needed). On HPC systems, this often means unloading a specific module.
     - Look inside NCEPLIBS-external's top-level `CMakeLists.txt` if the offending library is one of the build targets, and if yes, turn it off.
     - If the offending library is a prerequisite for a build target (i.e. HDF5 is a prerequisite for NetCDF) and the build target itself is already installed on the system, try to turn off the build target (e.g. `option(BUILD_NETCDF "Build NetCDF?" OFF)`)
     - If the offending library is a prerequisite for a build target (i.e. HDF5 is a prerequisite for NetCDF) and the build target itself is _not_ installed on the system, you need to install the build target using the same method you used for installing the offending library and turn it off in `CMakeLists.txt`.
