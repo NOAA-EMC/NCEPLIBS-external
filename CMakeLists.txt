@@ -17,12 +17,11 @@ option(BUILD_ESMF "Build ESMF?" ON)
 option(BUILD_NETCDF "Build NetCDF?" ON)
 option(BUILD_JASPER "Build Jasper?" ON)
 option(BUILD_PNG "Build libpng?" ON)
-option(BUILD_JPEG "Build libjpeg?" ON)
 option(BUILD_WGRIB2 "Build wgrib2?" ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "JPEG" "WGRIB2")
+set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "WGRIB2")
 set(libs_to_build)
 foreach(lib ${libs})
   if(BUILD_${lib})
@@ -154,9 +153,9 @@ if(BUILD_PNG)
     )
 endif()
 
-if(BUILD_JPEG OR BUILD_JASPER)
+if(BUILD_JASPER)
    ExternalProject_Add(libjpeg
-    PREFIX ${PROJECT_BINARY_DIR}/libpng
+    PREFIX ${PROJECT_BINARY_DIR}/libjpeg
     CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
     -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
