@@ -37,18 +37,19 @@ include(ExternalProject)
 include(GNUInstallDirs)
 
 if(BUILD_MPI)
+  set (MPICH_VERSION "3.3.2")
   ExternalProject_Add(mpi
-    PREFIX ${PROJECT_BINARY_DIR}/openmpi
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/openmpi
+    PREFIX ${PROJECT_BINARY_DIR}/mpich
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/mpich
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     BUILD_IN_SOURCE 1
-    DOWNLOAD_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && ${PROJECT_SOURCE_DIR}/openmpi/extract.sh ${PROJECT_SOURCE_DIR}/openmpi
-    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && ./configure --prefix=${CMAKE_INSTALL_PREFIX}
-    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && $(MAKE) && $(MAKE) check
-    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/openmpi && $(MAKE) install
+    DOWNLOAD_COMMAND cd ${PROJECT_BINARY_DIR}/mpich && tar -xzf ${PROJECT_SOURCE_DIR}/mpich/mpich-${MPICH_VERSION}.tar.gz
+    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && ./configure --prefix=${CMAKE_INSTALL_PREFIX}
+    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && $(MAKE) && $(MAKE) check
+    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && $(MAKE) install
     )
   set(MPI_ROOT ${CMAKE_INSTALL_PREFIX})
-  set(MPI_C_LIBRARY_VERSION_STRING "Open MPI")
+  set(MPI_C_LIBRARY_VERSION_STRING "MPICH")
   set(MPI_C_VERSION_MAJOR "3")
 else()
   set(MPI_DETERMINE_LIBRARY_VERSION true)
@@ -198,7 +199,9 @@ if(BUILD_WGRIB2)
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && ${PROJECT_SOURCE_DIR}/wgrib2/extract_and_configure.sh ${PROJECT_SOURCE_DIR}/wgrib2
-    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} $(MAKE) && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} $(MAKE) lib
+    # Do not use $(MAKE), because it seems wgrib2 sometimes fails to build when multiple threads are used (to be tested further)
+    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
+    #BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} $(MAKE) && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} $(MAKE) lib
     INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX}
     )
 endif()
