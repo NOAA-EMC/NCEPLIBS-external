@@ -4,7 +4,7 @@ set -eux
 
 SOURCE_DIR=$1
 
-tar -xvzf $SOURCE_DIR/wgrib2-2.0.8.tar.gz
+tar -xzf $SOURCE_DIR/wgrib2-2.0.8.tar.gz
 
 cd grib2
 
