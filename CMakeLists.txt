@@ -72,6 +72,8 @@ if(NOT DEFINED MPITYPE AND BUILD_ESMF)
 endif()
 
 if(BUILD_NETCDF OR BUILD_PNG)
+  # Fix the wrong installation directories in zlib's CMakeLists.txt
+  execute_process(COMMAND ${PROJECT_SOURCE_DIR}/fix_zlib.sh ${PROJECT_SOURCE_DIR}/zlib/CMakeLists.txt)
   ExternalProject_Add(zlib
     PREFIX ${PROJECT_BINARY_DIR}/zlib
     CMAKE_ARGS
@@ -105,6 +107,7 @@ if(BUILD_NETCDF)
     -DCMAKE_BUILD_TYPE=RELEASE
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/hdf5
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    DEPENDS zlib
     )
 
   ExternalProject_Add(netcdf
