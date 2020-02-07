@@ -216,6 +216,8 @@ if(BUILD_ESMF)
   if(NOT BUILD_NETCDF)
     add_custom_target(netcdf-fortran)
     find_package(NetCDF REQUIRED)
+    # Convert cmake list into space-separated string for ESMF
+    string (REPLACE ";" " " NETCDF_LIBRARIES "${NETCDF_LIBRARIES}")
   endif()
 
   if(NOT BUILD_MPI)
