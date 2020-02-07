@@ -158,6 +158,8 @@ if(BUILD_PNG)
 endif()
 
 if(BUILD_JASPER)
+   # Fix the wrong installation directories in libjpeg's CMakeLists.txt
+   execute_process(COMMAND ${PROJECT_SOURCE_DIR}/fix_libjpeg.sh ${PROJECT_SOURCE_DIR}/libjpeg/cmake/dist.cmake)
    ExternalProject_Add(libjpeg
     PREFIX ${PROJECT_BINARY_DIR}/libjpeg
     CMAKE_ARGS
@@ -168,9 +170,7 @@ if(BUILD_JASPER)
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/libjpeg
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
-endif()
 
-if(BUILD_JASPER)
   ExternalProject_Add(jasper
     PREFIX ${PROJECT_BINARY_DIR}/jasper
     CMAKE_ARGS
