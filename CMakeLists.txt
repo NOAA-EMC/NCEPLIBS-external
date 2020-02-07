@@ -205,7 +205,7 @@ if(BUILD_WGRIB2)
     # Do not use $(MAKE), because it seems wgrib2 sometimes fails to build when multiple threads are used (to be tested further)
     BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
     #BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} $(MAKE) && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} $(MAKE) lib
-    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX}
+    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
     )
 endif()
 

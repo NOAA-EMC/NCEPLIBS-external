@@ -3,9 +3,11 @@
 set -eux
 
 CMAKE_INSTALL_PREFIX=$1
+CMAKE_INSTALL_LIBDIR=$2
 
+mkdir -p ${CMAKE_INSTALL_PREFIX}/bin
 mkdir -p ${CMAKE_INSTALL_PREFIX}/include
-mkdir -p ${CMAKE_INSTALL_PREFIX}/lib
-cp lib/*.mod ${CMAKE_INSTALL_PREFIX}/include
-cp lib/libwgrib2.a ${CMAKE_INSTALL_PREFIX}/lib
+mkdir -p ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
 cp wgrib2/wgrib2 ${CMAKE_INSTALL_PREFIX}/bin
+cp lib/*.mod ${CMAKE_INSTALL_PREFIX}/include
+cp lib/libwgrib2.a ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
