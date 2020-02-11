@@ -1,0 +1,20 @@
+--- libjpeg/cmake/dist.cmake
++++ libjpeg/cmake/dist.cmake
+@@ -50,11 +50,12 @@ message ( "DIST_DEPENDS: ${DIST_DEPENDS}")
+ 
+ ## INSTALL DEFAULTS (Relative to CMAKE_INSTALL_PREFIX)
+ # Primary paths
+-set ( INSTALL_BIN bin CACHE PATH "Where to install binaries to." )
+-set ( INSTALL_LIB lib CACHE PATH "Where to install libraries to." )
+-set ( INSTALL_INC include CACHE PATH "Where to install headers to." )
+-set ( INSTALL_ETC etc CACHE PATH "Where to store configuration files" )
+-set ( INSTALL_SHARE share CACHE PATH "Directory for shared data." )
++include(GNUInstallDirs)
++set ( INSTALL_BIN ${CMAKE_INSTALL_BINDIR} CACHE PATH "Where to install binaries to." )
++set ( INSTALL_LIB ${CMAKE_INSTALL_LIBDIR} CACHE PATH "Where to install libraries to." )
++set ( INSTALL_INC ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Where to install headers to." )
++set ( INSTALL_ETC ${CMAKE_SYSCONFDIR} CACHE PATH "Where to store configuration files" )
++set ( INSTALL_SHARE ${CMAKE_INSTALL_DATAROOTDIR} CACHE PATH "Directory for shared data." )
+ 
+ # Secondary paths
+ option ( INSTALL_VERSION
