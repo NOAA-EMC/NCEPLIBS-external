@@ -213,17 +213,29 @@ if(BUILD_WGRIB2)
     message(FATAL_ERROR "Unknown compiler, cannot configure wgrib2")
   endif()
 
-  ExternalProject_Add(wgrib2
-    PREFIX ${PROJECT_BINARY_DIR}/wgrib2
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
-    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && ${PROJECT_SOURCE_DIR}/wgrib2/extract_and_configure.sh ${PROJECT_SOURCE_DIR}/wgrib2
-    # Do not use $(MAKE), because it seems wgrib2 sometimes fails to build when multiple threads are used (to be tested further)
-    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
-    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
-    )
-
+  # Don't build the wgrib2 executable on Cray, this causes all sorts of linker problems; just build the library
+  if(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*CRAY MPICH.*")
+    ExternalProject_Add(wgrib2
+      PREFIX ${PROJECT_BINARY_DIR}/wgrib2
+      SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
+      INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+      BUILD_IN_SOURCE 1
+      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch
+      # Do not use $(MAKE), because it seems wgrib2 sometimes fails to build when multiple threads are used (to be tested further)
+      BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
+      INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
+      )
+  else()
+    ExternalProject_Add(wgrib2
+      PREFIX ${PROJECT_BINARY_DIR}/wgrib2
+      SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
+      INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+      BUILD_IN_SOURCE 1
+      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch
+      BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
+      INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
+      )
+  endif()
   file(APPEND ${CMAKE_CONFIG_FILE} "set(WGRIB2_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 endif()
 
@@ -236,10 +248,18 @@ if(BUILD_ESMF)
     set(ESMF_CXXCOMPILEOPTS "-g -traceback -fp-model precise")
   elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
     set(comp "gfortran")
-    set(ESMF_BOPT "O")
-    set(ESMF_OPTLEVEL "2")
-    set(ESMF_F90COMPILEOPTS "-g -fbacktrace")
-    set(ESMF_CXXCOMPILEOPTS "-g")
+    # Compiling with optimization can lead to crashes on macOS
+    if(APPLE)
+      set(ESMF_BOPT "O")
+      set(ESMF_OPTLEVEL "0")
+      set(ESMF_F90COMPILEOPTS "-g -fbacktrace")
+      set(ESMF_CXXCOMPILEOPTS "-g -Wno-error=format-security")
+    else()
+      set(ESMF_BOPT "O")
+      set(ESMF_OPTLEVEL "2")
+      set(ESMF_F90COMPILEOPTS "-g -fbacktrace")
+      set(ESMF_CXXCOMPILEOPTS "-g")
+    endif()
   endif()
 
   if(NOT BUILD_NETCDF)
@@ -265,6 +285,13 @@ if(BUILD_ESMF)
     BUILD_COMMAND ${CMAKE_COMMAND} -E env PATH=${ESMF_PATH} ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_BOPT=${ESMF_BOPT} ESMF_OPTLEVEL=${ESMF_OPTLEVEL} ESMF_F90COMPILEOPTS=${ESMF_F90COMPILEOPTS} ESMF_CXXCOMPILEOPTS=${ESMF_CXXCOMPILEOPTS} $(MAKE)
     INSTALL_COMMAND ${CMAKE_COMMAND} -E env PATH=${ESMF_PATH} ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDES} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR} ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/mod ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} ESMF_BOPT=${ESMF_BOPT} ESMF_OPTLEVEL=${ESMF_OPTLEVEL} ESMF_F90COMPILEOPTS=${ESMF_F90COMPILEOPTS} ESMF_CXXCOMPILEOPTS=${ESMF_CXXCOMPILEOPTS} $(MAKE) install
     DEPENDS mpi netcdf-fortran)
+
+  if(APPLE)
+    ExternalProject_Add_Step(esmf POST_INSTALL
+    COMMAND ${PROJECT_SOURCE_DIR}/patches/esmf_macos_install_name_tool_fix.sh ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    DEPENDEES install)
+  endif()
 
   file(APPEND ${CMAKE_CONFIG_FILE} "set(ESMFMKFILE \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/esmf.mk\")\n")
 endif()

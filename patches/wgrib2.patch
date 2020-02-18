@@ -1,0 +1,30 @@
+--- grib2/makefile	2020-02-12 13:36:33.000000000 -0700
++++ grib2/makefile	2020-02-12 13:36:40.000000000 -0700
+@@ -115,15 +115,15 @@
+ 
+ 
+ # Warning do not set both USE_NETCDF3 and USE_NETCDF4 to one
+-USE_NETCDF3=1
++USE_NETCDF3=0
+ USE_NETCDF4=0
+ USE_REGEX=1
+ USE_TIGGE=1
+ USE_MYSQL=0
+-USE_IPOLATES=3
++USE_IPOLATES=0
+ USE_SPECTRAL=0
+ USE_UDF=0
+-USE_OPENMP=1
++USE_OPENMP=0
+ USE_PROJ4=0
+ USE_WMO_VALIDATION=0
+ DISABLE_TIMEZONE=0
+@@ -133,7 +133,7 @@
+ USE_G2CLIB=0
+ USE_PNG=1
+ USE_JASPER=1
+-USE_AEC=1
++USE_AEC=0
+ 
+ # Add any customization comments, appears in help and config pages
+ BUILD_COMMENTS=stock build
