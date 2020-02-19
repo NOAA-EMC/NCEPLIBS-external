@@ -8,7 +8,7 @@ This repository and the documentation are rapidly changing and not ready for gen
 
 This is a compilation of third-party libraries required to build NCEPLIBS and by extension the UFS weather model. For general information about NCEPLIBS-external, NCEPLIBS and the UFS weather model, the user is referred to the [Wiki](https://github.com/NOAA-EMC/NCEPLIBS-external/wiki).
 
-It inclues the following libraries:
+It includes the following libraries:
 
 1. CMake: cmake-3.16.3
 2. MPI: openmpi-4.0.2
