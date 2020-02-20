@@ -28,7 +28,7 @@ cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0.beta02/intel-18.0.3
 git clone -b ufs-v1.0.0.beta02 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DBUILD_JASPER=OFF -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0.beta02/intel-18.0.3.222/cray-mpich-7.4.0 .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0.beta02/intel-18.0.3.222/cray-mpich-7.4.0 .. 2>&1 | tee log.cmake
 make VERBOSE=1 2>&1 | tee log.make
 # no make install necessary
 
@@ -51,7 +51,7 @@ module use -a /lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/generic
 module load cmake/3.16.4
 
 module use -a /lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/intel-18.0.3.222
-module load NCEPlibs/1.0.0.beta01
+module load NCEPlibs/1.0.0.beta02
 
 export NETCDF=$NETCDF_DIR
 export CMAKE_Platform=gaea.intel

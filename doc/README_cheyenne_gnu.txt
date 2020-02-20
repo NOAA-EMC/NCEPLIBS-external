@@ -49,7 +49,7 @@ export FC=mpif90
 export CXX=mpicxx
 
 module use -a /glade/p/ral/jntp/GMTB/tools/modulefiles/gnu-8.3.0/mpt-2.19
-module load  NCEPlibs/1.0.0beta01
+module load  NCEPlibs/1.0.0beta02
 
 export CMAKE_Platform=cheyenne.gnu
 ./build.sh 2>&1 | tee build.log

@@ -55,7 +55,7 @@ export FC=ifort
 export CXX=icpc
 
 module use -a /lfs3/projects/hfv3gfs/GMTB/modulefiles/intel-18.0.5.274/impi-2018.4.274
-module load NCEPlibs/1.0.0beta01
+module load NCEPlibs/1.0.0beta02
 
 export CMAKE_Platform=jet.intel
 ./build.sh 2>&1 | tee build.log
