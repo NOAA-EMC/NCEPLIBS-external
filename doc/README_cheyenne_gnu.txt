@@ -16,20 +16,20 @@ export CC=mpicc
 export FC=mpif90
 export CXX=mpicxx
 
-mkdir -p /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta01/gnu-8.3.0/mpt-2.19/src
-cd /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta01/gnu-8.3.0/mpt-2.19/src
+mkdir -p /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta02/gnu-8.3.0/mpt-2.19/src
+cd /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta02/gnu-8.3.0/mpt-2.19/src
 
-git clone -b ufs-v1.0.0.beta01 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.0.0.beta02 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta01/gnu-8.3.0/mpt-2.19 .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta02/gnu-8.3.0/mpt-2.19 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j2 2>&1 | tee log.make
 
-cd /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta01/gnu-8.3.0/mpt-2.19/src
-git clone -b ufs-v1.0.0.beta01 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+cd /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta02/gnu-8.3.0/mpt-2.19/src
+git clone -b ufs-v1.0.0.beta02 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta01/gnu-8.3.0/mpt-2.19 -DCMAKE_INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta01/gnu-8.3.0/mpt-2.19 .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta02/gnu-8.3.0/mpt-2.19 -DCMAKE_INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta02/gnu-8.3.0/mpt-2.19 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j2 2>&1 | tee log.make
 make install
 
