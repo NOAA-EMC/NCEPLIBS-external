@@ -4,6 +4,8 @@ The following instructions were tested on a clean macOS systems (Mojave 1.14.6 a
 Homebrew is used to install the GNU (gcc+gfortran) compilers. Note that the export statements are
 required for the subsequent steps, as well as for building NCEPLIBS-external, NCEPLIBS and UFS applications.
 
+Note that 16GB of memory are required for running the UFS weather model at C96 resolution.
+
 1. Install homebrew, the GNU compilers and other utilities:
 
 (1) Install homebrew
