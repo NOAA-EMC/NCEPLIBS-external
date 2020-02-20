@@ -10,17 +10,18 @@ This is a compilation of third-party libraries required to build NCEPLIBS and by
 
 It includes the following libraries:
 
-1. CMake: cmake-3.16.3
-2. MPI: openmpi-4.0.2
-3. zlib: zlib-1.2.11
-4. HDF5: hdf5-1.10.4
-5. NetCDF: netcdf-c-4.7.3, netcdf-fortran-4.5.2
-6. libpng: libpng-1.6.35
-7. libjpeg: jpeg-9.1
-8. Jasper: jasper-2.0.16
-9. WGRIB2: wgrib-2.0.8
-10. ESMF: esmf-8.0.0
-
+| Library         | Supported (tested) versions                                |
+|-----------------|------------------------------------------------------------|
+| CMake           | cmake-3.16.3                                               |
+| MPI             | openmpi-4.0.2                                              |
+| zlib            | zlib-1.2.11                                                |
+| HDF5            | hdf5-1.10.4                                                |
+| NetCDF          | netcdf-c-4.7.3, netcdf-fortran-4.5.2                       |
+| libpng          | libpng-1.6.35                                              |
+| libjpeg         | jpeg-9.1                                                   |
+| Jasper          | jasper-2.0.16                                              |
+| WGRIB2          | wgrib-2.0.8                                                |
+| ESMF            | esmf-8.0.0                                                 |
 
 ## Building, Requirements, Troubleshooting, Support
 
@@ -52,7 +53,7 @@ For building NCEPLIBS-external, use `/full_path_to_where_you_installed_cmake/bin
 | MVAPICH2        | 2.3.3                                                      |
 | Open MPI        | 4.0.2                                                      |
 | Intel MPI       | 2018.0.4, 2019.6.154                                       |
-| SGI MPT         | 2.19                       
+| SGI MPT         | 2.19                                                       |
 
 ### Prepare to Build 
 
