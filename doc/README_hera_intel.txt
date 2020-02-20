@@ -54,7 +54,7 @@ export CXX=icpc
 export FC=ifort
 
 module use -a /scratch1/BMC/gmtb/software/modulefiles/intel-18.0.5.274/impi-2018.0.4
-module load NCEPlibs/1.0.0beta01
+module load NCEPlibs/1.0.0beta02
 
 export CMAKE_Platform=hera.intel
 ./build.sh 2>&1 | tee build.log

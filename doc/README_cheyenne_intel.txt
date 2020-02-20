@@ -1,4 +1,4 @@
-Setup instructions for CISL Cheyenne using Intel-18.0.5
+Setup instructions for CISL Cheyenne using Intel-19.0.5
 
 module purge
 module load ncarenv/1.3
@@ -49,7 +49,7 @@ export FC=mpif90
 export CXX=mpicxx
 
 module use -a /glade/p/ral/jntp/GMTB/tools/modulefiles/intel-19.0.5/mpt-2.19
-module load  NCEPlibs/1.0.0beta01
+module load  NCEPlibs/1.0.0beta02
 
 export CMAKE_Platform=cheyenne.intel
 ./build.sh 2>&1 | tee build.log
