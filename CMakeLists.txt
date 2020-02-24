@@ -21,6 +21,12 @@ option(BUILD_WGRIB2 "Build wgrib2?" ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+# Consistency check. To avoid linking errors with different versions of libz,
+# either both NetCDF and PNG must be built or none of them.
+if((BUILD_NETCDF OR BUILD_PNG) AND NOT (BUILD_NETCDF AND BUILD_PNG))
+  message(FATAL_ERROR "NetCDF and PNG must both be built or both supplied externally")
+endif()
+
 set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "WGRIB2")
 set(libs_to_build)
 foreach(lib ${libs})
