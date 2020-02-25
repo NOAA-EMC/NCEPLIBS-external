@@ -30,6 +30,9 @@ yum install -y patch
 yum install -y python2
 alternatives --config python
 # choose /usr/bin/python2
+# Install libxml2-2.9.7 (for xmllint)
+yum install libxml2-2.9.7
+
 mkdir /usr/local/ufs-release-v1
 chown -R ec2-user:ec2-user /usr/local/ufs-release-v1
 exit
@@ -48,7 +51,7 @@ NCEPLIBS-external and configure it (e.g., how to turn off building certain packa
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
 cd /usr/local/ufs-release-v1/src
-git clone -b ufs-v1.0.0.beta02 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 # Install cmake 3.16.3 (default OS version is too old)
 cd cmake-src
@@ -69,7 +72,7 @@ and build NCEPLIBS. The default configuration assumes that all dependencies were
 by NCEPLIBS-external as described above.
 
 cd /usr/local/ufs-release-v1/src
-git clone -b ufs-v1.0.0.beta02 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build

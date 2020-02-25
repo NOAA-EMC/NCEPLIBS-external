@@ -1,8 +1,5 @@
 Setup instructions for TACC Stampede using Intel-18.0.2
 
-### DH* NOTE - the instructions below are for the yet-to-be-created tag v1.0.0.beta03.
-### This should be available tomorrow, Feb 25. The instructions should also work with v1.0.0.beta02
-
 module purge
 #
 module load libfabric/1.7.0
@@ -37,14 +34,14 @@ cd NCEPLIBS-external
 mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
 cmake -DBUILD_MPI=OFF -DBUILD_PNG=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.0.0.beta03 .. 2>&1 | tee log.cmake
-make VERBOSE=1 -j2 2>&1 | tee log.make
+make VERBOSE=1 -j8 2>&1 | tee log.make
 
 cd $WORK/NCEPLIBS-ufs-v1.0.0.beta03/src
 git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
 cmake -DEXTERNAL_LIBS_DIR=$WORK/NCEPLIBS-ufs-v1.0.0.beta03 -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.0.0.beta03 .. 2>&1 | tee log.cmake
-make VERBOSE=1 -j2 2>&1 | tee log.make
+make VERBOSE=1 -j8 2>&1 | tee log.make
 make install
 
 
