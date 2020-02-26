@@ -35,29 +35,24 @@ git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
 cmake -DEXTERNAL_LIBS_DIR=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166 -DCMAKE_INSTALL_PREFIX=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
-
-### DH* UNTIL HERE ###
-
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install
 
 
-
-
 How to build the model with those libraries installed:
 
-module load intel/18.0.5.274
-module load impi/2018.0.4
-module load netcdf/4.7.0
-module use -a /scratch1/BMC/gmtb/software/modulefiles/generic
-module load cmake/3.16.3
+module purge
+module load intel/2020
+module load impi/2020
+module load netcdf/4.7.2
+module load cmake/3.15.4
+module li
 
-export CC=icc
-export CXX=icpc
-export FC=ifort
+export CMAKE_C_COMPILER=mpiicc
+export CMAKE_CXX_COMPILER=mpiicpc
+export CMAKE_Fortran_COMPILER=mpiifort
 
-module use -a /scratch1/BMC/gmtb/software/modulefiles/intel-18.0.5.274/impi-2018.0.4
-module load NCEPlibs/1.0.0beta03
-
-export CMAKE_Platform=hera.intel
+. /work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166/bin/setenv_nceplibs.sh
+export CMAKE_Platform=orion.intel
+cp cmake/configure_hera.intel.cmake cmake/configure_orion.intel.cmake
 ./build.sh 2>&1 | tee build.log
