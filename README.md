@@ -67,7 +67,8 @@ Note that Windows systems and other compilers (e.g. PGI) are not supported at th
 
 - Setup instructions for macOS Mojave/Catalina using gcc and gfortran can be found in `doc/README_macos_gccgfortran.txt` in the repository.
 - Setup instructions for macOS Mojave/Catalina using clang and gfortran can be found in `doc/README_macos_clanggfortran.txt` in the repository.
-- Setup instructions for Red Hat Linx 8 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
+- Setup instructions for Red Hat Linux 8 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
+- Setup instructions for Ubuntu Linux 18.04 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
 - Setup instructions for TACC Stampede using icc and ifort can be found in `doc/README_stampede_intel.txt` in the repository.
 - Setup instructions for MSU Orion using icc and ifort can be found in `doc/README_orion_intel.txt` in the repository.
 

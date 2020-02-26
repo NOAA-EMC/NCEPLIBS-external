@@ -67,6 +67,6 @@ export FC=ifort
 export CXX=icpc
 export NETCDF=${TACC_NETCDF_DIR}
 
-. /work/06146/tg854455/stampede2/NCEPLIBS-ufs-v1.0.0.beta03/bin/setenv_nceplibs.sh
+. $WORK/NCEPLIBS-ufs-v1.0.0.beta03/NCEPLIBS-ufs-v1.0.0.beta03/bin/setenv_nceplibs.sh
 export CMAKE_Platform=stampede.intel
 ./build.sh 2>&1 | tee build.log
