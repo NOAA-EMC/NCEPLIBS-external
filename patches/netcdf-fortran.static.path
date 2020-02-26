@@ -1,0 +1,11 @@
+--- netcdf-fortran/CMakeLists.txt	2020-02-25 15:53:26.000000000 -0700
++++ netcdf-fortran/CMakeLists.txt	2020-02-26 08:47:49.000000000 -0700
+@@ -26,7 +26,7 @@
+ SET(PACKAGE_VERSION ${VERSION})
+ 
+ # Set known dependencies.
+-SET(EXTRA_DEPS "")
++SET(EXTRA_DEPS "${HDF5_HL_LIBRARY};${HDF5_C_LIBRARY};${ZLIB_LIBRARY}")
+ # Get system configuration,
+ # Use it to determine osname,
+ # os release, cpu. These will be used

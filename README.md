@@ -68,6 +68,8 @@ Note that Windows systems and other compilers (e.g. PGI) are not supported at th
 - Setup instructions for macOS Mojave/Catalina using gcc and gfortran can be found in `doc/README_macos_gccgfortran.txt` in the repository.
 - Setup instructions for macOS Mojave/Catalina using clang and gfortran can be found in `doc/README_macos_clanggfortran.txt` in the repository.
 - Setup instructions for Red Hat Linx 8 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
+- Setup instructions for TACC Stampede using icc and ifort can be found in `doc/README_stampede_intel.txt` in the repository.
+- Setup instructions for MSU Orion using icc and ifort can be found in `doc/README_orion_intel.txt` in the repository.
 
 ### Setup instructions for pre-configured systems
 
@@ -90,7 +92,11 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=INSERT_PATH_HERE ..
 make <-jx>
 ```
-If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks.
+If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks. When static linking is the default option on a given system (e.g. Cray), add
+```
+-DSTATIC_IS_DEFAULT=ON
+```
+to the `cmake` call.
 
 By default, NCEPLIBS-external will build and install all libraries listed above except the optional CMake (see next section when this is needed). This is primarily targeted for users who are setting up their own workstations in order to get a consistent software stack. It is important that the MPI wrappers use the same compiler that is used to compile the other external libraries, the NCEP libraries and any UFS application that depends on those. 
 

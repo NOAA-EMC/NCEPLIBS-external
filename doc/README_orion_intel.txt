@@ -1,11 +1,10 @@
-Setup instructions for NOAA RDHPC Hera using Intel-18.0.5.274
+Setup instructions for MSU Orion using Intel-19.1.0.166
 
 module purge
-module load intel/18.0.5.274
-module load impi/2018.0.4
-module load netcdf/4.7.0
-module use -a /scratch1/BMC/gmtb/software/modulefiles/generic
-module load cmake/3.16.3
+module load intel/2020
+module load impi/2020
+module load netcdf/4.7.2
+module load cmake/3.15.4
 module li
 
 > Currently Loaded Modules:
@@ -18,26 +17,31 @@ export CC=icc
 export CXX=icpc
 export FC=ifort
 
-export HDF5_ROOT=/apps/hdf5/1.10.5/intel/18.0.5.274
+export HDF5_ROOT=/apps/intel-2020/hdf5-1.10.5
 export PNG_ROOT=/usr
 
-mkdir -p /scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.0.4/src
-cd /scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.0.4/src
+mkdir -p /work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166/src
+cd /work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166/src
 
 git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
-cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.0.4 .. 2>&1 | tee log.cmake
+cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 
-cd /scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.0.4/src
+cd /work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166/src
 git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=/scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.0.4 -DCMAKE_INSTALL_PREFIX=/scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.0.4 .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166 -DCMAKE_INSTALL_PREFIX=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0.beta03/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
+
+### DH* UNTIL HERE ###
+
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install
+
+
 
 
 How to build the model with those libraries installed:

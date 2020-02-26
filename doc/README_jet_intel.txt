@@ -27,7 +27,6 @@ cd /lfs3/projects/hfv3gfs/GMTB/NCEPlibs-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-
 git clone -b ufs-v1.0.0.beta03 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
 cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/lfs3/projects/hfv3gfs/GMTB/NCEPlibs-ufs-v1.0.0.beta03/intel-18.0.5.274/impi-2018.4.274 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
