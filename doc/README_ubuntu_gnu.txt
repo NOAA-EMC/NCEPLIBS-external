@@ -1,8 +1,8 @@
-### Red Hat Enterprise Linux 8.1 using gcc-8.3.1 and gfortran-8.3.1
+### Ubuntu Linux 18.04 LTS using gcc-8.3.0 and gfortran-8.3.0
 
-The following instructions were tested on a Red Hat 8 Amazon EC2 compute node, which comes with
-essentially no packages installed. Many of the packages that are installed with yum in the
-following may already be installed on your system. Note that the yum Open MPI library did not
+The following instructions were tested on a Ubuntu 18.04 Amazon EC2 compute node, which comes with
+essentially no packages installed. Many of the packages that are installed with apt in the
+following may already be installed on your system. CHECK ::: Note that the yum Open MPI library did not
 work correctly in our tests, instead the NCEPLIBS-external MPICH version is used.
 
 A t3a.2xlarge instance with 16 cores and 32GB of memory was used, although a smaller instance
@@ -13,28 +13,35 @@ for the make calls).
 
 sudo su
 # Optional: this is usually a good idea, but should be used with care (it may destroy your existing setup)
-yum update
-# Install gcc-8.3.1, g++-8.3.1 and gfortran-8.3.1
-yum install -y gcc-gfortran gcc-c++
-# Install wget-1.19.5
-yum install -y wget
-# Install git-2.18.2
-yum install -y git
-# Install make-4.2.1
-yum install -y make
-# Install openssl-devel-1.1.1
-yum install -y openssl-devel
+apt update
+# Install gcc-8.3.0, g++-8.3.0 and gfortran-8.3.0
+apt install -y gfortran-8 g++-8
+
+update-alternatives --install /usr/bin/cpp      cpp      /usr/bin/cpp-8 1
+update-alternatives --install /usr/bin/gcc      gcc      /usr/bin/gcc-8 1
+update-alternatives --install /usr/bin/g++      g++      /usr/bin/g++-8 1
+update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-8 1
+
+# Install wget-1.19.4
+apt install -y wget
+# Install git-2.17.1
+apt install -y git
+# Install make-4.1
+apt install -y make
+# Install libssl-dev-1.1.1
+apt install -y libssl-dev
 # Install patch-2.7.6
-yum install -y patch
-# Install Python-2.7.16
-yum install -y python2
-alternatives --config python
-# choose /usr/bin/python2
-# Install libxml2-2.9.7 (for xmllint)
-yum install libxml2-2.9.7
+apt install -y patch
+# Install Python-2.7.17
+apt install -y python2.7
+# Make Python 2.7 default
+update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
+update-alternatives --install /usr/bin/python python /usr/bin/python2.7 2
+# Install libxml2-utils-2.9.4 (for xmllint)
+apt-get install libxml2-utils
 
 mkdir /usr/local/ufs-release-v1
-chown -R ec2-user:ec2-user /usr/local/ufs-release-v1
+chown -R ubuntu:ubuntu /usr/local/ufs-release-v1
 exit
 
 export CC=gcc
@@ -62,7 +69,6 @@ cd ..
 mkdir build && cd build
 /usr/local/ufs-release-v1/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1 .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-
 
 3. Install NCEPLIBS
 

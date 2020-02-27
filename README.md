@@ -67,7 +67,10 @@ Note that Windows systems and other compilers (e.g. PGI) are not supported at th
 
 - Setup instructions for macOS Mojave/Catalina using gcc and gfortran can be found in `doc/README_macos_gccgfortran.txt` in the repository.
 - Setup instructions for macOS Mojave/Catalina using clang and gfortran can be found in `doc/README_macos_clanggfortran.txt` in the repository.
-- Setup instructions for Red Hat Linx 8 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
+- Setup instructions for Red Hat Linux 8 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
+- Setup instructions for Ubuntu Linux 18.04 using gcc and gfortran can be found in `doc/README_redhat_gnu.txt` in the repository.
+- Setup instructions for TACC Stampede using icc and ifort can be found in `doc/README_stampede_intel.txt` in the repository.
+- Setup instructions for MSU Orion using icc and ifort can be found in `doc/README_orion_intel.txt` in the repository.
 
 ### Setup instructions for pre-configured systems
 
@@ -90,7 +93,11 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=INSERT_PATH_HERE ..
 make <-jx>
 ```
-If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks.
+If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks. When static linking is the default option on a given system (e.g. Cray), add
+```
+-DSTATIC_IS_DEFAULT=ON
+```
+to the `cmake` call.
 
 By default, NCEPLIBS-external will build and install all libraries listed above except the optional CMake (see next section when this is needed). This is primarily targeted for users who are setting up their own workstations in order to get a consistent software stack. It is important that the MPI wrappers use the same compiler that is used to compile the other external libraries, the NCEP libraries and any UFS application that depends on those. 
 
@@ -108,9 +115,9 @@ Users working on HPC systems should use the MPI libraries installed by the syste
 
 4. HDF5: will be built as dependency for NetCDF.  If netCDF is not built, the HDF5 build is also turned off.
 
-5. NetCDF: Add `-DBUILD_NETCDF=OFF` to the cmake flags. If CMake cannot find the netCDF/netCDF Fortran library, set the environment variable `NETCDF` to the directory where NetCDF was installed. On some systems, the netCDF-c and netCDF-fortran libraries are installed in separate locations. In this case, set set the environment variable `NETCDF` to the directory where netcdf-c was installed, and `NETCDF_FORTRAN` to the directory where netcdf-fortran was installed.
+5. NetCDF: Add `-DBUILD_NETCDF=OFF` to the cmake flags. If CMake cannot find the netCDF/netCDF Fortran library, set the environment variable `NETCDF` to the directory where NetCDF was installed. On some systems, the netCDF-c and netCDF-fortran libraries are installed in separate locations. In this case, set set the environment variable `NETCDF` to the directory where netcdf-c was installed, and `NETCDF_FORTRAN` to the directory where netcdf-fortran was installed. If NetCDF is not built, the libpng build must also be turned off and an existing libpng installation, linking against the same zlib version as NetCDF, must be used.
 
-6. libpng: Add `-DBUILD_PNG=OFF` to the cmake flags. If CMake cannot find the libpng library, set the environment variable `LIBPNG_ROOT` to the directory where libpng was installed.
+6. libpng: Add `-DBUILD_PNG=OFF` to the cmake flags. If CMake cannot find the libpng library, set the environment variable `LIBPNG_ROOT` to the directory where libpng was installed. See the troubleshooting section about issues with linking to libz if the libpng build is disabled but the NetCDF build is not. If libpng is not built, the NetCDF build must also be turned off and an existing NetCDF installation, linking against the same zlib version as libpng, must be used.
 
 7. libjpeg: libjpeg will be built as dependency for Jasper. If Jasper is not built, the libjpeg build is also turned off.
 
@@ -136,4 +143,3 @@ The above options to turn off selected components can also be used by advanced u
 ## Disclaimer
 
 The United States Department of Commerce (DOC) GitHub project code is provided on an "as is" basis and the user assumes responsibility for its use. DOC has relinquished control of the information and no longer has responsibility to protect the integrity, confidentiality, or availability of the information. Any claims against the Department of Commerce stemming from the use of its GitHub project will be governed by all applicable Federal law. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by the Department of Commerce. The Department of Commerce seal and logo, or the seal and logo of a DOC bureau, shall not be used in any manner to imply endorsement of any commercial product or activity by DOC or the United States Government.
-
