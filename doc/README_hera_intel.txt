@@ -35,7 +35,6 @@ cd /scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta04/intel-18.0.5.274/impi-
 git clone -b ufs-v1.0.0.beta04 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-PKG_CONFIG_PATH=/apps/netcdf/4.7.0/intel/18.0.5.274/lib/pkgconfig \
 cmake -DEXTERNAL_LIBS_DIR=/scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta04/intel-18.0.5.274/impi-2018.0.4 -DCMAKE_INSTALL_PREFIX=/scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v1.0.0.beta04/intel-18.0.5.274/impi-2018.0.4 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install
