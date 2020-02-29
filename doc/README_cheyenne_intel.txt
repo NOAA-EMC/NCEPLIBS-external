@@ -22,7 +22,7 @@ cd /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta04/intel-19.0.5/mpt-2.19
 git clone -b ufs-v1.0.0.beta04 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta04/intel-19.0.5/mpt-2.19 .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DBUILD_PNG=OFF -DCMAKE_INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta04/intel-19.0.5/mpt-2.19 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j2 2>&1 | tee log.make
 
 cd /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v1.0.0.beta04/intel-19.0.5/mpt-2.19/src/
