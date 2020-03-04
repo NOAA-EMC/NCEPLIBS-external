@@ -41,6 +41,9 @@ brew install cmake
 (6) Install coreutils-8.31 (required later for running the UFS models)
 brew install coreutils
 
+(7) Install pkg-config-0.29.2
+brew install pkg-config
+
 2. Install missing external libraries from NCEPLIBS-external
 
 The user is referred to the top-level README.md for more detailed instructions on how to build
