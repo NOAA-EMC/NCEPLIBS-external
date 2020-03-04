@@ -30,6 +30,11 @@ brew install gcc@9
 
 brew install llvm@9
 
+export PATH="/usr/local/opt/llvm/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm/include"
+export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+
 export CC=clang-9
 export FC=gfortran-9
 export CXX=clang++-9
@@ -52,7 +57,7 @@ NCEPLIBS-external and configure it (e.g., how to turn off building certain packa
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
 cd /usr/local/ufs-release-v1/src
-git clone -b ufs-v1.0.0.beta04 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1 .. 2>&1 | tee log.cmake
@@ -67,7 +72,7 @@ and build NCEPLIBS. The default configuration assumes that all dependencies were
 by NCEPLIBS-external as described above.
 
 cd /usr/local/ufs-release-v1/src
-git clone -b ufs-v1.0.0.beta04 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build
@@ -80,6 +85,10 @@ make install 2>&1 | tee log.install
 export CC=clang-9
 export FC=gfortran-9
 export CXX=clang++-9
+export PATH="/usr/local/opt/llvm/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm/include"
+export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
 ulimit -S -s unlimited
 . /usr/local/ufs-release-v1/bin/setenv_nceplibs.sh
 export CMAKE_Platform=macosx.gnu

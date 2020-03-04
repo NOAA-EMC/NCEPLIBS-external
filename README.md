@@ -42,7 +42,7 @@ For building NCEPLIBS-external, use `/full_path_to_where_you_installed_cmake/bin
 
 | Compiler vendor | Supported (tested) versions                                |
 |-----------------|------------------------------------------------------------|
-| Intel           | 18.0.3.222, 18.0.5.274, 19.0.2.187, 19.0.5.281             |
+| Intel           | 18.0.3.222, 18.0.5.274, 19.0.2.187, 19.0.5.281, 19.1.0.166 |
 | GNU             | 8.3.0, 9.1.0, 9.2.0                                        |
 
 3. A supported MPI library unless installed as part of NCEPLIBS-external, see table below. Other versions may work, in particular if close to the versions listed below. It is recommended to compile the MPI library with the same compilers used to compile NCEPLIBS-external.
@@ -52,7 +52,7 @@ For building NCEPLIBS-external, use `/full_path_to_where_you_installed_cmake/bin
 | MPICH           | 3.3.1, 3.3.2                                               |
 | MVAPICH2        | 2.3.3                                                      |
 | Open MPI        | 4.0.2                                                      |
-| Intel MPI       | 2018.0.4, 2019.6.154                                       |
+| Intel MPI       | 2018.0.4, 2019.6.154, 2020.0.166                           |
 | SGI MPT         | 2.19                                                       |
 
 ### Prepare to Build 
