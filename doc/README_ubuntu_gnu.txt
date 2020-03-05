@@ -14,14 +14,6 @@ for the make calls).
 sudo su
 # Optional: this is usually a good idea, but should be used with care (it may destroy your existing setup)
 apt update
-# Install gcc-8.3.0, g++-8.3.0 and gfortran-8.3.0
-apt install -y gfortran-8 g++-8
-
-update-alternatives --install /usr/bin/cpp      cpp      /usr/bin/cpp-8 1
-update-alternatives --install /usr/bin/gcc      gcc      /usr/bin/gcc-8 1
-update-alternatives --install /usr/bin/g++      g++      /usr/bin/g++-8 1
-update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-8 1
-
 # Install wget-1.19.4
 apt install -y wget
 # Install git-2.17.1
@@ -38,15 +30,19 @@ apt install -y python2.7
 update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
 update-alternatives --install /usr/bin/python python /usr/bin/python2.7 2
 # Install libxml2-utils-2.9.4 (for xmllint)
-apt-get install libxml2-utils
+apt install -y libxml2-utils
+# Install pkg-config-0.29.1
+apt install -y pkg-config
+# Install gcc-8.3.0, g++-8.3.0 and gfortran-8.3.0
+apt install -y gfortran-8 g++-8
 
 mkdir /usr/local/ufs-release-v1
 chown -R ubuntu:ubuntu /usr/local/ufs-release-v1
 exit
 
-export CC=gcc
-export CXX=g++
-export FC=gfortran
+export CC=gcc-8
+export CXX=g++-8
+export FC=gfortran-8
 
 cd /usr/local/ufs-release-v1
 mkdir src
@@ -85,13 +81,13 @@ cd build
 /usr/local/ufs-release-v1/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1 -DEXTERNAL_LIBS_DIR=/usr/local/ufs-release-v1 .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
-```
+
 
 4. To build the UFS models, source the shell script created by the NCEPLIBS installation and adjust the stacksize:
 
-export CC=gcc
-export CXX=g++
-export FC=gfortran
+export CC=gcc-8
+export CXX=g++-8
+export FC=gfortran-8
 ulimit -s unlimited
 . /usr/local/ufs-release-v1/bin/setenv_nceplibs.sh
 export CMAKE_Platform=linux.gnu

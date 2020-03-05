@@ -79,7 +79,7 @@ cd build
 /usr/local/ufs-release-v1/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1 -DEXTERNAL_LIBS_DIR=/usr/local/ufs-release-v1 .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
-```
+
 
 4. To build the UFS models, source the shell script created by the NCEPLIBS installation and adjust the stacksize:
 
