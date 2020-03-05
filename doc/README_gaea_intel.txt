@@ -27,6 +27,7 @@ mkdir -p /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.
 cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3/src
 # Note: remote access severely limited on gaea; need to do the git clone on a remote system and rsync to gaea
 git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+cd NCEPLIBS-external
 mkdir build && cd build
 cmake -DBUILD_MPI=OFF -DSTATIC_IS_DEFAULT=ON -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
@@ -38,7 +39,7 @@ git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
 cmake -DEXTERNAL_LIBS_DIR=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3 -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3 -DSTATIC_IS_DEFAULT=ON .. 2>&1 | tee log.cmake
-make VERBOSE=1 2>&1 | tee log.make
+make VERBOSE=1 -j8 2>&1 | tee log.make
 make install VERBOSE=1 2>&1 | tee log.install
 
 

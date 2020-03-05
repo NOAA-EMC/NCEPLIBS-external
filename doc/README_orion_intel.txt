@@ -8,7 +8,7 @@ module load cmake/3.15.4
 module li
 
 > Currently Loaded Modules:
->  1) intel/18.0.5.274   2) impi/2018.0.4   3) netcdf/4.7.0   4) cmake/3.16.3
+  1) intel/2020   2) munge/0.5.13   3) slurm/19.05.3-2   4) impi/2020   5) hdf5/1.10.5   6) netcdf/4.7.2   7) cmake/3.15.4
 
 # Note: HDF5 is in: /apps/hdf5/1.10.5/intel/18.0.5.274
 # Note: ZLIB and PNG are in: /usr/include, /usr/lib64/
@@ -36,7 +36,7 @@ cd NCEPLIBS
 mkdir build && cd build
 cmake -DEXTERNAL_LIBS_DIR=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166 -DCMAKE_INSTALL_PREFIX=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
-make install
+make install 2>&1 | tee log.install
 
 
 How to build the model with those libraries installed:

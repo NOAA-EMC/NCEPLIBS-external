@@ -42,7 +42,7 @@ cd NCEPLIBS
 mkdir build && cd build
 cmake -DEXTERNAL_LIBS_DIR=$WORK/NCEPLIBS-ufs-v1.0.0 -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.0.0 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
-make install
+make install 2>&1 | tee log.install
 
 
 How to build the model with those libraries installed:
