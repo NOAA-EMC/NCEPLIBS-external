@@ -32,6 +32,8 @@ mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
 cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
+# Fix orion bug that prevents using dynamically linked ESMF libraries: simply delete them
+rm $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/lib64/libesmf*.so
 
 cd $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/src
 git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
@@ -50,6 +52,8 @@ module load impi/2020
 module load netcdf/4.7.2
 module load cmake/3.15.4
 module li
+
+ulimit -s unlimited
 
 export CMAKE_C_COMPILER=mpiicc
 export CMAKE_CXX_COMPILER=mpiicpc
