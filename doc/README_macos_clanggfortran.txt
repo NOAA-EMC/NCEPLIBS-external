@@ -32,8 +32,6 @@ brew install llvm@9
 
 export PATH="/usr/local/opt/llvm/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
-export CPPFLAGS="-I/usr/local/opt/llvm/include"
-export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
 
 export CC=clang-9
 export FC=gfortran-9
@@ -90,8 +88,6 @@ export FC=gfortran-9
 export CXX=clang++-9
 export PATH="/usr/local/opt/llvm/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
-export CPPFLAGS="-I/usr/local/opt/llvm/include"
-export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
 ulimit -S -s unlimited
 . /usr/local/ufs-release-v1/bin/setenv_nceplibs.sh
 export CMAKE_Platform=macosx.gnu
