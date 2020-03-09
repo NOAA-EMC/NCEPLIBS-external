@@ -85,8 +85,7 @@ Pre-configured systems do have existing installations of NCEPLIBS-external and N
 ### Get and Build the Code
 
 ```
-# Replace "master" with the tag that is supposed to be used
-git clone -b master --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build
 cd build

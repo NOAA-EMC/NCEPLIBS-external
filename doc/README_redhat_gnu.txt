@@ -81,7 +81,7 @@ make -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
 
 
-4. To build the UFS models, source the shell script created by the NCEPLIBS installation and adjust the stacksize:
+How to build the ufs-weather-model (standalone; not the ufs-mrweather app - for the latter, the model is built by the workflow) with those libraries installed:
 
 export CC=gcc
 export CXX=g++
