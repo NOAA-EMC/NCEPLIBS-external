@@ -1,9 +1,5 @@
 # NCEPLIBS-external
 
-## Warning
-
-This repository and the documentation are rapidly changing and not ready for general community use.
-
 ## Introduction
 
 This is a compilation of third-party libraries required to build NCEPLIBS and by extension the UFS weather model. For general information about NCEPLIBS-external, NCEPLIBS and the UFS weather model, the user is referred to the [Wiki](https://github.com/NOAA-EMC/NCEPLIBS-external/wiki).
@@ -85,8 +81,7 @@ Pre-configured systems do have existing installations of NCEPLIBS-external and N
 ### Get and Build the Code
 
 ```
-# Replace "master" with the tag that is supposed to be used
-git clone -b master --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build
 cd build

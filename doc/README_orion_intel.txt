@@ -44,7 +44,7 @@ make VERBOSE=1 -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
 
 
-How to build the model with those libraries installed:
+How to build the ufs-weather-model (standalone; not the ufs-mrweather app - for the latter, the model is built by the workflow) with those libraries installed:
 
 module purge
 module load intel/2020
