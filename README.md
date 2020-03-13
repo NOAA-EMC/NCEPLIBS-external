@@ -73,6 +73,7 @@ Note that Windows systems and other compilers (e.g. PGI) are not supported at th
 Pre-configured systems do have existing installations of NCEPLIBS-external and NCEPLIBS. Users should not have to build any of these unless new versions of the external libraries or the NCEPLIBS are to be tested. In this case, the following instructions will be useful to repeat the steps the UFS developers have taken. They can also be useful for users trying to install NCEPLIBS-external and NCEPLIBS on other HPC platforms with preinstalled MPI, netCDF, ...
 
 - Installation notes for NOAA RDHPC Hera using icc and ifort: `doc/README_hera_intel.txt`
+- Installation notes for NOAA RDHPC Hera using gcc and gfortran: `doc/README_hera_gnu.txt`
 - Installation notes for NOAA RDHPC Jet using icc and ifort: `doc/README_jet_intel.txt`
 - Installation notes for NOAA RDHPC Gaea using icc and ifort: `doc/README_gaea_intel.txt`
 - Installation notes for CISL Cheyenne using icc and ifort: `doc/README_cheyenne_intel.txt`

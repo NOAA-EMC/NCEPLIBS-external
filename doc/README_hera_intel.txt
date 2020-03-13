@@ -42,6 +42,7 @@ make install
 
 How to build the ufs-weather-model (standalone; not the ufs-mrweather app - for the latter, the model is built by the workflow) with those libraries installed:
 
+module purge
 module load intel/18.0.5.274
 module load impi/2018.0.4
 module load netcdf/4.7.0
