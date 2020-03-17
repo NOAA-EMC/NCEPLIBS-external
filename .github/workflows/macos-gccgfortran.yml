@@ -15,7 +15,8 @@ jobs:
     - name: Update packages
       run: |
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        brew install autoconf automake coreutils gcc@9 libtool mpich gnu-sed wget
+        #brew install autoconf automake coreutils gcc@9 libtool mpich gnu-sed wget
+        brew install automake coreutils mpich gnu-sed
     - name: Build NCEPLIBS-external
       run: |
         export CC=gcc-9
