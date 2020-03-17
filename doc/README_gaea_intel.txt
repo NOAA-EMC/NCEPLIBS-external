@@ -43,7 +43,19 @@ make VERBOSE=1 -j8 2>&1 | tee log.make
 make install VERBOSE=1 2>&1 | tee log.install
 
 
-How to build the ufs-weather-model (standalone; not the ufs-mrweather app - for the latter, the model is built by the workflow) with those libraries installed:
+- END OF THE SETUP INSTRUCTIONS -
+
+
+The following instructions are for building the ufs-weather-model (standalone;
+not the ufs-mrweather app - for the latter, the model is built by the workflow)
+with those libraries installed.
+
+This is separate from NCEPLIBS-external and NCEPLIBS, and details on how to get
+the code are provided here: https://github.com/ufs-community/ufs-weather-model/wiki
+
+After checking out the code and changing to the top-level directory of ufs-weather-model,
+the following commands should suffice to build the model.
+
 
 module load intel/18.0.3.222
 module unload cray-mpich/7.4.0
