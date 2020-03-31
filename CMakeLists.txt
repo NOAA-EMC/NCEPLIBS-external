@@ -13,10 +13,10 @@ if(POLICY CMP0074)
 endif(POLICY CMP0074)
 
 # Tell cmake what to build
-option(BUILD_MPI "Build MPI?" ON)
-option(BUILD_ESMF "Build ESMF?" ON)
+option(BUILD_MPI "Build MPI?" OFF)
+option(BUILD_ESMF "Build ESMF?" OFF)
 option(BUILD_NETCDF "Build NetCDF?" ON)
-option(BUILD_JASPER "Build Jasper?" ON)
+option(BUILD_JASPER "Build Jasper?" OFF)
 option(BUILD_PNG "Build libpng?" ON)
 option(BUILD_WGRIB2 "Build wgrib2?" ON)
 
@@ -29,6 +29,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # either both NetCDF and PNG must be built or none of them.
 if((BUILD_NETCDF OR BUILD_PNG) AND NOT (BUILD_NETCDF AND BUILD_PNG))
   message(FATAL_ERROR "NetCDF and PNG must both be built or both supplied externally")
+endif()
+
+# Remove this requirement later
+if(BUILD_WGRIB2 AND NOT BUILD_NETCDF)
+  message(FATAL_ERROR "If building wgrib2 NetCDF must also be built")
 endif()
 
 set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "WGRIB2")
@@ -296,7 +301,7 @@ if(BUILD_WGRIB2)
       BUILD_IN_SOURCE 1
       CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch
       # Do not use $(MAKE), because it seems wgrib2 sometimes fails to build when multiple threads are used (to be tested further)
-      BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
+      BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} NETCDF4_INCLUDES=${CMAKE_INSTALL_PREFIX}/include NETCDF4_LIB_DIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} make lib
       INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
       )
   else()
@@ -305,9 +310,10 @@ if(BUILD_WGRIB2)
       SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
       INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
       BUILD_IN_SOURCE 1
-      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch
-      BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
+      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch && cp ${PROJECT_SOURCE_DIR}/wgrib2/makefile ${PROJECT_SOURCE_DIR}/wgrib2/grib2
+      BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} NETCDF4_INCLUDES=${CMAKE_INSTALL_PREFIX}/include NETCDF4_LIB_DIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} && make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
       INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
+      DEPENDS netcdf
       )
   endif()
   file(APPEND ${CMAKE_CONFIG_FILE} "set(WGRIB2_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
