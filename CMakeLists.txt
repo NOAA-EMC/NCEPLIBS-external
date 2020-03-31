@@ -299,7 +299,7 @@ if(BUILD_WGRIB2)
       SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
       INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
       BUILD_IN_SOURCE 1
-      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch
+      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz && cp ${PROJECT_SOURCE_DIR}/wgrib2/makefile ${PROJECT_SOURCE_DIR}/wgrib2/grib2
       # Do not use $(MAKE), because it seems wgrib2 sometimes fails to build when multiple threads are used (to be tested further)
       BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} NETCDF4_INCLUDES=${CMAKE_INSTALL_PREFIX}/include NETCDF4_LIB_DIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} make lib
       INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
@@ -310,7 +310,7 @@ if(BUILD_WGRIB2)
       SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
       INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
       BUILD_IN_SOURCE 1
-      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch && cp ${PROJECT_SOURCE_DIR}/wgrib2/makefile ${PROJECT_SOURCE_DIR}/wgrib2/grib2
+      CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz && cp ${PROJECT_SOURCE_DIR}/wgrib2/makefile ${PROJECT_SOURCE_DIR}/wgrib2/grib2
       BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} NETCDF4_INCLUDES=${CMAKE_INSTALL_PREFIX}/include NETCDF4_LIB_DIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} && make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
       INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
       DEPENDS netcdf
