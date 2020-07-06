@@ -17,14 +17,12 @@ jobs:
 
     - name: checkout
       uses: actions/checkout@v2
-      with: 
-        path: externals
-        submodules: true
-       
+
+    - name: Init submodules
+      run: git submodule update --init --recursive
 
     - name: Build NCEPLIBS-external
       run: |
-        cd externals
         mkdir build
         cd build
         cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
