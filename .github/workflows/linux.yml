@@ -1,0 +1,31 @@
+name: Build Linux
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      FC: gfortran-9
+      CC: gcc-9
+      CXX: g++-9
+
+    steps:
+
+    - name: install-mpi
+      run: |
+        sudo apt-get install libmpich-dev
+
+    - name: checkout
+      uses: actions/checkout@v2
+      with: 
+        path: externals
+        submodules: true
+       
+
+    - name: Build NCEPLIBS-external
+      run: |
+        cd externals
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
+        make -j2
