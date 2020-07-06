@@ -7,7 +7,7 @@ jobs:
 
     runs-on: macos-latest
     env:
-      FC: gfortran-9
+      FC: gfortran
       CC: gcc-9
       CXX: g++-9
 

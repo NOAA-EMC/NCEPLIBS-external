@@ -26,4 +26,4 @@ jobs:
         mkdir build
         cd build
         cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
-        make -j2
+        make
