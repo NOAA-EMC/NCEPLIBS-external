@@ -8,8 +8,8 @@ jobs:
     runs-on: macos-latest
     env:
       FC: gfortran
-      CC: gcc-9
-      CXX: g++-9
+      CC: gcc
+      CXX: g++
 
     steps:
     - name: Checkout
