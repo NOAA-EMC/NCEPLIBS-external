@@ -10,5 +10,5 @@ ${PROJECT_SOURCE_DIR}/netcdf-fortran/configure \
     --libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} \
     CPPFLAGS="-I${NCDIR}/include  -I${H5DIR}/include -I${ZDIR}/include" \
     LDFLAGS="-L${NCDIR}/${CMAKE_INSTALL_LIBDIR} -L${H5DIR}/${CMAKE_INSTALL_LIBDIR} -L${ZDIR}/${CMAKE_INSTALL_LIBDIR}" \
-    LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz"
+    LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz -lm -ldl"
 
