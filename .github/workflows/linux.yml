@@ -25,5 +25,5 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -DCMAKE_INSTALL_PREFIX=$PWD/../install -DBUILD_WGRIB2=OFF -DBUILD_MPI=OFF ..
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_WGRIB2=OFF -DBUILD_MPI=OFF
         make
