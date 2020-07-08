@@ -6,6 +6,10 @@ jobs:
   build:
 
     runs-on: macos-latest
+    env:
+      FC: gfortran
+      CC: gcc
+      CXX: g++
 
     steps:
     - name: Checkout
@@ -19,14 +23,9 @@ jobs:
         brew install automake coreutils mpich gnu-sed
     - name: Build NCEPLIBS-external
       run: |
-        export CC=gcc-9
-        export FC=gfortran-9
-        export CXX=g++-9
         mkdir build
         cd build
-        cmake -DCMAKE_INSTALL_PREFIX=$PWD/../install .. 2>&1 | tee log.cmake
-        make -j8 2>&1 | tee log.make
+        cmake -DCMAKE_INSTALL_PREFIX=$PWD/../install -DBUILD_WGRIB2=OFF -DBUILD_MPI=OFF .. 2>&1 | tee log.cmake
+        make -j2 2>&1 | tee log.make
         cd ..
-        ls -l install/bin/ESMF_Info
-        ls -l install/bin/wgrib2
         cat install/share/nceplibs-external.cmake.config
