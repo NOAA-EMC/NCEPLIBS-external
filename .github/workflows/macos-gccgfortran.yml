@@ -1,0 +1,31 @@
+name: Build macOS gccgfortran
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+    env:
+      FC: gfortran
+      CC: gcc
+      CXX: g++
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Init submodules
+      run: git submodule update --init --recursive
+    - name: Update packages
+      run: |
+        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        #brew install autoconf automake coreutils gcc@9 libtool mpich gnu-sed wget
+        brew install automake coreutils mpich gnu-sed
+    - name: Build NCEPLIBS-external
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX=$PWD/../install -DBUILD_WGRIB2=OFF -DBUILD_MPI=OFF .. 2>&1 | tee log.cmake
+        make -j2 2>&1 | tee log.make
+        cd ..
+        cat install/share/nceplibs-external.cmake.config
