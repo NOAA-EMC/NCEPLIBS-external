@@ -12,7 +12,7 @@ jobs:
 
     steps:
 
-    - name: Install-mpi
+    - name: Install mpi
       run: |
         sudo apt-get install libmpich-dev
 
