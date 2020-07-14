@@ -1,6 +1,7 @@
 name: Build macOS GCC
 
-on: [push, pull_request]
+#on: [push, pull_request]
+on: []
 
 jobs:
   build:
@@ -15,7 +16,7 @@ jobs:
     - name: Update packages
       run: |
         brew install coreutils
-        brew install mpich
+        brew install libmpich-dev
 
     - name: Build NCEPLIBS-external
       run: |
