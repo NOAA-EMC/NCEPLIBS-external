@@ -15,7 +15,7 @@ jobs:
     - name: Update packages
       run: |
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        brew install coreutils gcc@9 mpich cmake
+        brew install coreutils mpich
 
     - name: Build NCEPLIBS-external
       run: |
