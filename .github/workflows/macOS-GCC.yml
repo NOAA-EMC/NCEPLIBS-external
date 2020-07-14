@@ -15,15 +15,14 @@ jobs:
     - name: Update packages
       run: |
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        brew install gcc
         brew install coreutils mpich
 
     - name: Build NCEPLIBS-external
       run: |
-        export CC=gcc-9
-        export FC=gfortran-9
-        export CXX=g++-9
+        export CC=mpicc
+        export FC=mpif90gfortran-9
+        export CXX=mpic++
         mkdir build
         cd build
-        cmake -DCMAKE_INSTALL_PREFIX=$PWD/../install .. 2>&1 | tee log.cmake
-        make -j8 2>&1 | tee log.make
+        cmake -DCMAKE_INSTALL_PREFIX=../install .. 2>&1 | tee log.cmake
+        make -j2 2>&1 | tee log.make
