@@ -14,23 +14,17 @@ jobs:
 
     - name: Update packages
       run: |
-        export HOMEBREW_FC=gfortran
-        export HOMEBREW_CC=gcc-9
-        export HOMEBREW_CXX=g++-9
         brew install coreutils
         brew install mpich
-        echo "FC = $(which gfortran-9)"
-        echo "CC = $(which gcc-9)"
-        echo "CXX= $(which g++-9)"
-        echo "mpiFC = $(which mpif90)"
-        echo "mpiCC = $(which mpicc)"
-        echo "mpiCXX= $(which mpic++)"
 
     - name: Build NCEPLIBS-external
       run: |
-        export CC=mpicc
         export FC=mpif90
+        export CC=mpicc
         export CXX=mpic++
+        echo "FC = ${FC}"
+        echo "CC = ${CC}"
+        echo "CXX= ${CXX}"
         mkdir build
         cd build
         cmake -DCMAKE_INSTALL_PREFIX=../install .. 2>&1 | tee log.cmake
