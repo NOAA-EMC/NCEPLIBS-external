@@ -1,4 +1,4 @@
-name: Build macOS gcc+gfortran
+name: Build macOS clang+gfortran
 
 on: [push, pull_request]
 
@@ -7,8 +7,8 @@ jobs:
 
     runs-on: macos-latest
     env:
-      CC: gcc-10
-      CXX: g++-10
+      CC: clang-9
+      CXX: clang-9
       FC: gfortran-10
 
     steps:
@@ -17,7 +17,7 @@ jobs:
       run: |
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
         # mpich installs gcc@10 as prerequisite
-        brew install automake coreutils gnu-sed mpich
+        brew install automake coreutils gnu-sed mpich llvm@9
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -27,6 +27,10 @@ jobs:
 
     - name: Build NCEPLIBS-external
       run: |
+        export PATH="/usr/local/opt/llvm@9/bin:$PATH"
+        export LD_LIBRARY_PATH="/usr/local/opt/llvm@9/lib:$LD_LIBRARY_PATH"
+        export CPPFLAGS="-I/usr/local/opt/llvm@9/include"
+        export LDFLAGS="-L/usr/local/opt/llvm@9/lib -Wl,-rpath,/usr/local/opt/llvm@9/lib"
         mkdir build
         cd build
         cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF -DBUILD_WGRIB2=OFF

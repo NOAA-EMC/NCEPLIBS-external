@@ -1,4 +1,5 @@
-name: Build Linux
+name: Build Linux gcc+gfortran
+
 on: [push, pull_request]
 
 jobs:
@@ -11,11 +12,11 @@ jobs:
 
     steps:
 
-    - name: install-mpi
+    - name: Install mpi
       run: |
         sudo apt-get install libmpich-dev
 
-    - name: checkout
+    - name: Checkout
       uses: actions/checkout@v2
 
     - name: Init submodules
@@ -25,5 +26,6 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_WGRIB2=OFF -DBUILD_MPI=OFF
-        make
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
+        make -j4
+        cat install/share/nceplibs-external.cmake.config

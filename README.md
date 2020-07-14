@@ -11,8 +11,8 @@ It includes the following libraries:
 | CMake           | cmake-3.16.3                                               |
 | MPI             | openmpi-4.0.2                                              |
 | zlib            | zlib-1.2.11                                                |
-| HDF5            | hdf5-1.10.4                                                |
-| NetCDF          | netcdf-c-4.7.3, netcdf-fortran-4.5.2                       |
+| HDF5            | hdf5-1.10.6                                                |
+| NetCDF          | netcdf-c-4.7.4, netcdf-fortran-4.5.3                       |
 | libpng          | libpng-1.6.35                                              |
 | libjpeg         | jpeg-9.1                                                   |
 | Jasper          | jasper-2.0.16                                              |
