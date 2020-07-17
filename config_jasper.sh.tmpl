@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -x
+
+${PROJECT_SOURCE_DIR}/jasper/configure \
+    CC=${CMAKE_C_COMPILER} \
+    --prefix=${CMAKE_INSTALL_PREFIX} \
+    --enable-libjpeg \
+    LDFLAGS="-L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" \
+    CPPFLAGS="-I${CMAKE_INSTALL_PREFIX}/include"
