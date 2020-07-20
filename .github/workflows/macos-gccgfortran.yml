@@ -29,6 +29,6 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF -DBUILD_WGRIB2=OFF
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
         make -j4
         cat install/share/nceplibs-external.cmake.config

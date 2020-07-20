@@ -217,18 +217,17 @@ if(BUILD_JASPER)
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/libjpeg
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
-
+  
+  configure_file(${PROJECT_SOURCE_DIR}/config_jasper.sh.tmpl ${PROJECT_BINARY_DIR}/config_jasper.sh)
+  
   ExternalProject_Add(jasper
     PREFIX ${PROJECT_BINARY_DIR}/jasper
-    CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-    -DCMAKE_BUILD_TYPE=RELEASE
-    -DJAS_ENABLE_DOC=FALSE
-    -DCMAKE_SKIP_RPATH=TRUE
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/jasper
+    BINARY_DIR ${PROJECT_BINARY_DIR}/jasper
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${PROJECT_BINARY_DIR}/config_jasper.sh
+    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/jasper && $(MAKE)
+    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/jasper && $(MAKE) install
     DEPENDS libjpeg
     )
 
@@ -237,25 +236,25 @@ if(BUILD_JASPER)
 endif()
 
 if(BUILD_WGRIB2)
-  if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
-    set(COMP_SYS intel_linux)
-  elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
-    set(COMP_SYS gnu_linux)
-  elseif(${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
-    set(COMP_SYS clang_linux)
-  else()
-    message(FATAL_ERROR "Unknown compiler, cannot configure wgrib2")
-  endif()
 
   ExternalProject_Add(wgrib2
+    GIT_REPOSITORY "https://github.com/NOAA-EMC/NCEPLIBS-wgrib2.git"
+    GIT_TAG "feature/cmake"
     PREFIX ${PROJECT_BINARY_DIR}/wgrib2
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
-    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2 && tar -xvf ${PROJECT_SOURCE_DIR}/wgrib2/wgrib2-2.0.8.tar.gz  && patch -N -p0 < ${PROJECT_SOURCE_DIR}/patches/wgrib2.patch
-    BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make && CC=${CMAKE_C_COMPILER} FC=${CMAKE_Fortran_COMPILER} COMP_SYS=${COMP_SYS} make lib
-    INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/wgrib2/grib2 && ${PROJECT_SOURCE_DIR}/wgrib2/install.sh ${CMAKE_INSTALL_PREFIX} ${CMAKE_INSTALL_LIBDIR}
+    CMAKE_ARGS
+      -DUSE_NETCDF4=ON
+      -DUSE_IPOLATES=0
+      -DUSE_SPECTRAL=OFF
+      -DMAKE_FTN_API=ON
+      -DUSE_PNG=ON
+      -DUSE_JASPER=ON
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+      -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
+      -DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}
+      DEPENDS jasper libpng netcdf-fortran
     )
+
   file(APPEND ${CMAKE_CONFIG_FILE} "set(WGRIB2_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 endif()
 
