@@ -238,7 +238,7 @@ endif()
 if(BUILD_WGRIB2)
 
   ExternalProject_Add(wgrib2
-    GIT_REPOSITORY "https://github.com/kgerheiser/NCEPLIBS-wgrib2.git"
+    GIT_REPOSITORY "https://github.com/NOAA-EMC/NCEPLIBS-wgrib2.git"
     GIT_TAG "feature/cmake"
     PREFIX ${PROJECT_BINARY_DIR}/wgrib2
     CMAKE_ARGS
