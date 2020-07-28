@@ -27,5 +27,7 @@
 	url = https://github.com/Kitware/CMake
 [submodule "cmake"]
 	path = cmake
-	url = https://github.com/NOAA-EMC/CMakeModules
-	branch = release/public-v1
+	#url = https://github.com/NOAA-EMC/CMakeModules
+	#branch = develop
+	url = https://github.com/climbfuji/CMakeModules
+	branch = heavy_axe_cleanup
