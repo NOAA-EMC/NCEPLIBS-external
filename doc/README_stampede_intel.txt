@@ -3,12 +3,12 @@ Setup instructions for TACC Stampede using Intel-18.0.2
 module purge
 #
 module load libfabric/1.7.0
-module load git/2.9.0
+module load git/2.24.1
 module load autotools/1.1
-module load xalt/2.7.9
+module load xalt/2.8
 module load TACC
 #
-module load python2/2.7.15
+module load python3/3.7.0
 module load intel/18.0.2
 module load cmake/3.16.1
 module load impi/18.0.2
@@ -17,7 +17,8 @@ module load netcdf/4.6.2
 module li
 
 > Currently Loaded Modules:
->  1) pnetcdf/1.11.0   2) netcdf/4.6.2   3) libfabric/1.7.0   4) intel/18.0.2   5) impi/18.0.2   6) git/2.9.0   7) autotools/1.1   8) python2/2.7.15   9) cmake/3.16.1  10) xalt/2.7.9  11) TACC
+>   1) libfabric/1.7.0   3) autotools/1.1   5) TACC           7) cmake/3.16.1   9) python3/3.7.0   11) netcdf/4.6.2
+>   2) git/2.24.1        4) xalt/2.8        6) intel/18.0.2   8) impi/18.0.2   10) pnetcdf/1.11.0
 
 export CC=icc
 export FC=ifort
@@ -62,12 +63,12 @@ the following commands should suffice to build the model.
 module purge
 #
 module load libfabric/1.7.0
-module load git/2.9.0
+module load git/2.24.1
 module load autotools/1.1
-module load xalt/2.7.9
+module load xalt/2.8
 module load TACC
 #
-module load python2/2.7.15
+module load python3/3.7.0
 module load intel/18.0.2
 module load cmake/3.16.1
 module load impi/18.0.2
