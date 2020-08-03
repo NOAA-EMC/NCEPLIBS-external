@@ -257,9 +257,10 @@ endif()
 if(BUILD_WGRIB2)
 
   ExternalProject_Add(wgrib2
-    GIT_REPOSITORY "https://github.com/NOAA-EMC/NCEPLIBS-wgrib2.git"
-    GIT_TAG "feature/cmake"
     PREFIX ${PROJECT_BINARY_DIR}/wgrib2
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
+    BINARY_DIR ${PROJECT_BINARY_DIR}/wgrib2
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     CMAKE_ARGS
       -DUSE_NETCDF4=ON
       -DUSE_IPOLATES=0

@@ -29,3 +29,7 @@
 	path = cmake
 	url = https://github.com/NOAA-EMC/CMakeModules
 	branch = develop
+[submodule "wgrib2"]
+	path = wgrib2
+	url = https://github.com/NOAA-EMC/NCEPLIBS-wgrib2
+	branch = feature/cmake
