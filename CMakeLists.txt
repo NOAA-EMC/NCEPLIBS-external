@@ -50,6 +50,12 @@ set(CMAKE_CONFIG_FILE "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/ncep
 file(WRITE ${CMAKE_CONFIG_FILE} "# CMake configuration file for NCEPLIBS-external\n")
 
 if(BUILD_MPI)
+  if(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU" AND ${CMAKE_Fortran_COMPILER_VERSION} VERSION_GREATER 9.9)
+    set(MPICH_FORTRAN_FLAGS "-w -fallow-argument-mismatch")
+    message(STATUS "Set Fortran flags for compiling MPICH with gfortran-10+: '${MPICH_FORTRAN_FLAGS}'")
+  else()
+    set(MPICH_FORTRAN_FLAGS "")
+  endif()
   set (MPICH_VERSION "3.3.2")
   ExternalProject_Add(mpi
     PREFIX ${PROJECT_BINARY_DIR}/mpich
@@ -57,7 +63,7 @@ if(BUILD_MPI)
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     BUILD_IN_SOURCE 1
     DOWNLOAD_COMMAND cd ${PROJECT_BINARY_DIR}/mpich && tar -xzf ${PROJECT_SOURCE_DIR}/mpich/mpich-${MPICH_VERSION}.tar.gz
-    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && ./configure --prefix=${CMAKE_INSTALL_PREFIX}
+    CONFIGURE_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && ./configure --prefix=${CMAKE_INSTALL_PREFIX} "FFLAGS=${MPICH_FORTRAN_FLAGS}"
     BUILD_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && $(MAKE) && $(MAKE) check
     INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && $(MAKE) install
     )
