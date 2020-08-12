@@ -100,7 +100,7 @@ the code are provided here: https://github.com/ufs-community/ufs-weather-model/w
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
-
+scl enable gcc-toolset-9 bash
 export CC=gcc
 export CXX=g++
 export FC=gfortran
