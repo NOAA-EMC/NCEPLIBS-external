@@ -1,4 +1,4 @@
-Setup instructions for NOAA RDHPC Hera using Intel-18.0.5.274
+Setup instructions for NOAA RDHPC Hera using gnu-9.2.0
 
 module purge
 module load gnu/9.2.0

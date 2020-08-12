@@ -23,23 +23,21 @@ export PNG_ROOT=/usr
 # Set environment variable WORK to a directory in your userspace, example for user dheinzel of group gmtb:
 #export WORK=/work/noaa/gmtb/dheinzel
 
-mkdir -p $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/src
-cd $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/src
+mkdir -p $WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166/src
+cd $WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166/src
 
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
-cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
+cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
-# Fix orion bug that prevents using dynamically linked ESMF libraries: simply delete them
-rm $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/lib64/libesmf*.so
 
-cd $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/src
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+cd $WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166/src
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=$WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166 -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=$WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166 -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
 
@@ -71,7 +69,7 @@ export CMAKE_C_COMPILER=mpiicc
 export CMAKE_CXX_COMPILER=mpiicpc
 export CMAKE_Fortran_COMPILER=mpiifort
 
-. $WORK/NCEPLIBS-ufs-v1.0.0/intel-19.1.0.166/impi-2020.0.166/bin/setenv_nceplibs.sh
+. $WORK/NCEPLIBS-ufs-v1.1.0/intel-19.1.0.166/impi-2020.0.166/bin/setenv_nceplibs.sh
 export CMAKE_Platform=orion.intel
 cp cmake/configure_hera.intel.cmake cmake/configure_orion.intel.cmake
 ./build.sh 2>&1 | tee build.log
