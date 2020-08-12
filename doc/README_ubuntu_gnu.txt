@@ -2,12 +2,12 @@
 
 The following instructions were tested on a Ubuntu 18.04 Amazon EC2 compute node, which comes with
 essentially no packages installed. Many of the packages that are installed with apt in the
-following may already be installed on your system. CHECK ::: Note that the yum Open MPI library did not
+following may already be installed on your system. Note that the apt Open MPI library did not
 work correctly in our tests, instead the NCEPLIBS-external MPICH version is used.
 
-A t3a.2xlarge instance with 16 cores and 32GB of memory was used, although a smaller instance
-with 16GB of memory and fewer cores should suffice (need to adjust the number of parallel threads
-for the make calls).
+AMI: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200810 (ami-0bcc094591f354be2)
+
+Instance: t2.xlarge instance with 4 cores and 16GB of memory was used, 100GB EBS
 
 1. Install the GNU compilers and other utilities
 
@@ -18,33 +18,32 @@ apt update
 apt install -y wget
 # Install git-2.17.1
 apt install -y git
-# Install make-4.1
+# Install make-4.1.9
 apt install -y make
 # Install libssl-dev-1.1.1
 apt install -y libssl-dev
 # Install patch-2.7.6
 apt install -y patch
-# Install Python-2.7.17
-apt install -y python2.7
-# Make Python 2.7 default
+# Configure Python 3.6 as default
 update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
-update-alternatives --install /usr/bin/python python /usr/bin/python2.7 2
 # Install libxml2-utils-2.9.4 (for xmllint)
 apt install -y libxml2-utils
 # Install pkg-config-0.29.1
 apt install -y pkg-config
+# Install m4-1.4.18
+apt install m4
 # Install gcc-8.3.0, g++-8.3.0 and gfortran-8.3.0
 apt install -y gfortran-8 g++-8
 
-mkdir /usr/local/ufs-release-v1
-chown -R ubuntu:ubuntu /usr/local/ufs-release-v1
+mkdir /usr/local/ufs-release-v1.1.0
+chown -R ubuntu:ubuntu /usr/local/ufs-release-v1.1.0
 exit
 
 export CC=gcc-8
 export CXX=g++-8
 export FC=gfortran-8
 
-cd /usr/local/ufs-release-v1
+cd /usr/local/ufs-release-v1.1.0
 mkdir src
 
 2.Install missing external libraries from NCEPLIBS-external
@@ -53,17 +52,17 @@ The user is referred to the top-level README.md for more detailed instructions o
 NCEPLIBS-external and configure it (e.g., how to turn off building certain packages such as MPI etc).
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
-cd /usr/local/ufs-release-v1/src
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+cd /usr/local/ufs-release-v1.1.0/src
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 # Install cmake 3.16.3 (default OS version is too old)
 cd cmake-src
-./bootstrap --prefix=/usr/local/ufs-release-v1
-make
-make install
+./bootstrap --prefix=/usr/local/ufs-release-v1.1.0
+make 2>&1 | tee log.make
+make install 2>&1 | tee log.install
 cd ..
 mkdir build && cd build
-/usr/local/ufs-release-v1/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1 .. 2>&1 | tee log.cmake
+/usr/local/ufs-release-v1.1.0/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 
 3. Install NCEPLIBS
@@ -73,12 +72,12 @@ The user is referred to the top-level README.md of the NCEPLIBS GitHub repositor
 and build NCEPLIBS. The default configuration assumes that all dependencies were built
 by NCEPLIBS-external as described above.
 
-cd /usr/local/ufs-release-v1/src
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+cd /usr/local/ufs-release-v1.1.0/src
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build
-/usr/local/ufs-release-v1/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1 -DEXTERNAL_LIBS_DIR=/usr/local/ufs-release-v1 .. 2>&1 | tee log.cmake
+/usr/local/ufs-release-v1.1.0/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 -DEXTERNAL_LIBS_DIR=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
 
@@ -101,7 +100,7 @@ export CC=gcc-8
 export CXX=g++-8
 export FC=gfortran-8
 ulimit -s unlimited
-. /usr/local/ufs-release-v1/bin/setenv_nceplibs.sh
+. /usr/local/ufs-release-v1.1.0/bin/setenv_nceplibs.sh
 export CMAKE_Platform=linux.gnu
 ./build.sh 2>&1 | tee build.log
 

@@ -16,7 +16,7 @@ It includes the following libraries:
 | libpng          | libpng-1.6.35                                              |
 | libjpeg         | jpeg-9.1                                                   |
 | Jasper          | jasper-2.0.16                                              |
-| WGRIB2          | wgrib-2.0.8                                                |
+| WGRIB2          | NCEPLIBS-wgrib2 ufs-v1.1.0                                 |
 | ESMF            | esmf-8.0.0                                                 |
 
 ## Building, Requirements, Troubleshooting, Support
@@ -39,7 +39,7 @@ For building NCEPLIBS-external, use `/full_path_to_where_you_installed_cmake/bin
 | Compiler vendor | Supported (tested) versions                                |
 |-----------------|------------------------------------------------------------|
 | Intel           | 18.0.3.222, 18.0.5.274, 19.0.2.187, 19.0.5.281, 19.1.0.166 |
-| GNU             | 8.3.0, 9.1.0, 9.2.0                                        |
+| GNU             | 8.3.0, 9.1.0, 9.2.0, 10.2.0                                |
 
 3. A supported MPI library unless installed as part of NCEPLIBS-external, see table below. Other versions may work, in particular if close to the versions listed below. It is recommended to compile the MPI library with the same compilers used to compile NCEPLIBS-external.
 
@@ -82,18 +82,14 @@ Pre-configured systems do have existing installations of NCEPLIBS-external and N
 ### Get and Build the Code
 
 ```
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=INSERT_PATH_HERE ..
 make <-jx>
 ```
-If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks. When static linking is the default option on a given system (e.g. Cray), add
-```
--DSTATIC_IS_DEFAULT=ON
-```
-to the `cmake` call.
+If `-DCMAKE_INSTALL_PREFIX=` is omitted, the libraries will be installed in directory `install` underneath the `build` directory. The optional argument `<-jx>` speeds up the build process by using `x` parallel compile tasks.
 
 By default, NCEPLIBS-external will build and install all libraries listed above except the optional CMake (see next section when this is needed). This is primarily targeted for users who are setting up their own workstations in order to get a consistent software stack. It is important that the MPI wrappers use the same compiler that is used to compile the other external libraries, the NCEP libraries and any UFS application that depends on those. 
 

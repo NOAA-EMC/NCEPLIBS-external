@@ -20,21 +20,21 @@ export CXX=icpc
 export HDF5_ROOT=/apps/hdf5/1.10.5/intel/18.0.5.274
 export PNG_ROOT=/usr
 
-mkdir -p /lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.0.0/intel-18.0.5.274/impi-2018.4.274/src
-cd /lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.0.0/intel-18.0.5.274/impi-2018.4.274/src
+mkdir -p /lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.1.0/intel-18.0.5.274/impi-2018.4.274/src
+cd /lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.1.0/intel-18.0.5.274/impi-2018.4.274/src
 
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
-cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.0.0/intel-18.0.5.274/impi-2018.4.274 .. 2>&1 | tee log.cmake
+cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.1.0/intel-18.0.5.274/impi-2018.4.274 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 
-cd /lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.0.0/intel-18.0.5.274/impi-2018.4.274/src
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+cd /lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.1.0/intel-18.0.5.274/impi-2018.4.274/src
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.0.0/intel-18.0.5.274/impi-2018.4.274 -DCMAKE_INSTALL_PREFIX=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.0.0/intel-18.0.5.274/impi-2018.4.274 .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.1.0/intel-18.0.5.274/impi-2018.4.274 -DCMAKE_INSTALL_PREFIX=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-ufs-v1.1.0/intel-18.0.5.274/impi-2018.4.274 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install
 
@@ -64,7 +64,7 @@ export FC=ifort
 export CXX=icpc
 
 module use -a /lfs4/HFIP/hfv3gfs/software/modulefiles/intel-18.0.5.274/impi-2018.4.274
-module load NCEPlibs/1.0.0
+module load NCEPlibs/1.1.0
 
 export CMAKE_Platform=jet.intel
 ./build.sh 2>&1 | tee build.log
