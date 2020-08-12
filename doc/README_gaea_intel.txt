@@ -1,44 +1,43 @@
-Setup instructions for NOAA RDHPC Gaea using Cray Intel-18.0.3.222
+Setup instructions for NOAA RDHPC Gaea using Cray Intel-19.0.5.281
 
-module load intel/18.0.3.222
-module unload cray-mpich/7.4.0
-module load cray-mpich/7.7.3
+module load intel/19.0.5.281
+module unload cray-mpich
+module load cray-mpich/7.7.11
 module unload cray-netcdf
-module use -a /lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/generic
-module load cmake/3.16.4
+module load cmake/3.17.0
 module li
 
 > Currently Loaded Modulefiles:
->   1) modules/3.2.10.5                                7) udreg/2.3.2-6.0.6.0_15.18__g5196236.ari        13) job/2.2.3-6.0.6.0_9.47__g6c4e934.ari           19) craype-broadwell                               25) hpcrpt/noaa-3
->   2) eproxy/2.0.22-6.0.6.0_5.1__g1ebe45c.ari         8) ugni/6.0.14-6.0.6.0_18.12__g777707d.ari        14) dvs/2.7_2.2.96-6.0.6.1_10.6__g9b73f30          20) CmrsEnv                                        26) cmake/3.16.4
->   3) intel/18.0.3.222                                9) pmi/5.0.10-1.0000.11050.0.0.ari                15) alps/6.6.0-6.0.6.0_35.25__gd0a1ab9.ari         21) TimeZoneEDT                                    27) cray-mpich/7.7.3
->   4) craype-network-aries                           10) dmapp/7.1.1-6.0.6.0_51.37__g5a674e0.ari        16) rca/2.2.18-6.0.6.0_19.14__g2aa4f39.ari         22) globus_toolkit/6.0.1470089956
->   5) craype/2.5.5                                   11) gni-headers/5.0.12-6.0.6.0_3.26__g527b6e1.ari  17) atp/2.0.2                                      23) globus/6.0.1470089956
->   6) cray-libsci/16.06.1                            12) xpmem/2.2.14-6.0.6.1_5.8__g34333c9.ari         18) PrgEnv-intel/6.0.3                             24) DefApps
+>   1) modules/3.2.11.4                                 7) udreg/2.3.2-7.0.2.1_2.15__g8175d3d.ari          13) job/2.2.4-7.0.2.1_2.18__g36b56f4.ari            19) PrgEnv-intel/6.0.5                              25) darshan/3.2.1
+>   2) eproxy/2.0.24-7.0.2.1_2.20__g8e04b33.ari         8) ugni/6.0.14.0-7.0.2.1_3.15__ge78e5b0.ari        14) dvs/2.12_2.2.164-7.0.2.1_3.8__g1afc88eb         20) craype-broadwell                                26) DefApps
+>   3) intel/19.0.5.281                                 9) pmi/5.0.15                                      15) alps/6.6.59-7.0.2.1_3.7__g872a8d62.ari          21) cray-mpich/7.7.11                               27) hpcrpt/noaa-3
+>   4) craype-network-aries                            10) dmapp/7.1.1-7.0.2.1_2.19__g38cf134.ari          16) rca/2.2.20-7.0.2.1_2.20__g8e3fb5b.ari           22) CmrsEnv                                         28) cmake/3.17.0
+>   5) craype/2.6.3                                    11) gni-headers/5.0.12.0-7.0.2.1_2.4__g3b1768f.ari  17) atp/2.1.3                                       23) TimeZoneEDT
+>   6) cray-libsci/19.06.1                             12) xpmem/2.2.20-7.0.2.1_2.15__g87eb960.ari         18) perftools-base/7.1.3                            24) globus-toolkit/6.0.17
 
 # Need to use MPI wrappers in order to find pre-installed Cray MPICH
 export CC=cc
 export FC=ftn
 export CXX=CC
-export MPI_ROOT=/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0
+export MPI_ROOT=/opt/cray/pe/mpt/7.7.11/gni/mpich-intel/16.0
 
-mkdir -p /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3/src
+mkdir -p /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11/src
 
-cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3/src
+cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11/src
 # Note: remote access severely limited on gaea; need to do the git clone on a remote system and rsync to gaea
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_MPI=OFF -DSTATIC_IS_DEFAULT=ON -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3 .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 # no make install necessary
 
-cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3/src
+cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11/src
 # Note: remote access severely limited on gaea; need to do the git clone on a remote system and rsync to gaea
-git clone -b ufs-v1.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3 -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.0.0/intel-18.0.3.222/cray-mpich-7.7.3 -DSTATIC_IS_DEFAULT=ON .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11 -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install VERBOSE=1 2>&1 | tee log.install
 
@@ -57,16 +56,15 @@ After checking out the code and changing to the top-level directory of ufs-weath
 the following commands should suffice to build the model.
 
 
-module load intel/18.0.3.222
-module unload cray-mpich/7.4.0
-module load cray-mpich/7.7.3
+module load intel/19.0.5.281
+module unload cray-mpich
+module load cray-mpich/7.7.11
 module unload cray-netcdf
+module load cmake/3.17.0
+module li
 
-module use -a /lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/generic
-module load cmake/3.16.4
-
-module use -a /lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/intel-18.0.3.222
-module load NCEPlibs/1.0.0
+module use -a /lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/intel-19.0.5.281/cray-mpich-7.7.11
+module load NCEPlibs/1.1.0
 
 export CMAKE_Platform=gaea.intel
 export CMAKE_C_COMPILER=cc
