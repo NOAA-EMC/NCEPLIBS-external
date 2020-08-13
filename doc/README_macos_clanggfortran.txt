@@ -1,3 +1,7 @@
+##########################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+##########################################################################################
+
 Setup instructions for macOS Mojave or Catalina using clang-10.0.0 + gfortran-10.2.0
 
 The following instructions were tested on a clean macOS systems (Mojave 10.14.6 and Catalina 10.15.6).
@@ -60,7 +64,7 @@ NCEPLIBS-external and configure it (e.g., how to turn off building certain packa
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
 cd /usr/local/ufs-release-v1.1.0/src
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
@@ -75,7 +79,7 @@ and build NCEPLIBS. The default configuration assumes that all dependencies were
 by NCEPLIBS-external as described above.
 
 cd /usr/local/ufs-release-v1.1.0/src
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build
