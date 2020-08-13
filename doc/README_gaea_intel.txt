@@ -1,3 +1,7 @@
+##########################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+##########################################################################################
+
 Setup instructions for NOAA RDHPC Gaea using Cray Intel-19.0.5.281
 
 module load intel/19.0.5.281
@@ -21,23 +25,23 @@ export FC=ftn
 export CXX=CC
 export MPI_ROOT=/opt/cray/pe/mpt/7.7.11/gni/mpich-intel/16.0
 
-mkdir -p /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11/src
+mkdir -p /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-develop/intel-19.0.5.281/cray-mpich-7.7.11/src
 
-cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11/src
+cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-develop/intel-19.0.5.281/cray-mpich-7.7.11/src
 # Note: remote access severely limited on gaea; need to do the git clone on a remote system and rsync to gaea
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11 .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-develop/intel-19.0.5.281/cray-mpich-7.7.11 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 # no make install necessary
 
-cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11/src
+cd /lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-develop/intel-19.0.5.281/cray-mpich-7.7.11/src
 # Note: remote access severely limited on gaea; need to do the git clone on a remote system and rsync to gaea
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11 -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-ufs-v1.1.0/intel-19.0.5.281/cray-mpich-7.7.11 .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-develop/intel-19.0.5.281/cray-mpich-7.7.11 -DCMAKE_INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/NCEPlibs-develop/intel-19.0.5.281/cray-mpich-7.7.11 .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install VERBOSE=1 2>&1 | tee log.install
 

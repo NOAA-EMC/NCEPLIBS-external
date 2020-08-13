@@ -1,3 +1,7 @@
+##########################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+##########################################################################################
+
 ### Ubuntu Linux 18.04 LTS using gcc-8.3.0 and gfortran-8.3.0
 
 The following instructions were tested on a Ubuntu 18.04 Amazon EC2 compute node, which comes with
@@ -53,7 +57,7 @@ NCEPLIBS-external and configure it (e.g., how to turn off building certain packa
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
 cd /usr/local/ufs-release-v1.1.0/src
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 # Install cmake 3.16.3 (default OS version is too old)
 cd cmake-src
@@ -73,7 +77,7 @@ and build NCEPLIBS. The default configuration assumes that all dependencies were
 by NCEPLIBS-external as described above.
 
 cd /usr/local/ufs-release-v1.1.0/src
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build

@@ -1,3 +1,7 @@
+##########################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+##########################################################################################
+
 Setup instructions for TACC Stampede using Intel-18.0.2
 
 module purge
@@ -26,23 +30,23 @@ export CXX=icpc
 export NETCDF=${TACC_NETCDF_DIR}
 export HDF5_ROOT=/opt/apps/intel18/hdf5/1.10.4/x86_64
 
-mkdir -p $WORK/NCEPLIBS-ufs-v1.1.0/src
+mkdir -p $WORK/NCEPLIBS-develop/src
 # $WORK is set automatically by the system; for the user writing these instructions,
-# it corresponds to /work/06146/tg854455/stampede2/NCEPLIBS-ufs-v1.1.0/src
+# it corresponds to /work/06146/tg854455/stampede2/NCEPLIBS-develop/src
 
-cd $WORK/NCEPLIBS-ufs-v1.1.0/src
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+cd $WORK/NCEPLIBS-develop/src
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
-cmake -DBUILD_MPI=OFF -DBUILD_PNG=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.1.0 .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DBUILD_PNG=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-develop .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 
-cd $WORK/NCEPLIBS-ufs-v1.1.0/src
-git clone -b ufs-v1.1.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
+cd $WORK/NCEPLIBS-develop/src
+git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DEXTERNAL_LIBS_DIR=$WORK/NCEPLIBS-ufs-v1.1.0 -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-ufs-v1.1.0 .. 2>&1 | tee log.cmake
+cmake -DEXTERNAL_LIBS_DIR=$WORK/NCEPLIBS-develop -DCMAKE_INSTALL_PREFIX=$WORK/NCEPLIBS-develop .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make install 2>&1 | tee log.install
 
@@ -81,6 +85,6 @@ export FC=ifort
 export CXX=icpc
 export NETCDF=${TACC_NETCDF_DIR}
 
-. $WORK/NCEPLIBS-ufs-v1.1.0/bin/setenv_nceplibs.sh
+. $WORK/NCEPLIBS-develop/bin/setenv_nceplibs.sh
 export CMAKE_Platform=stampede.intel
 ./build.sh 2>&1 | tee build.log
