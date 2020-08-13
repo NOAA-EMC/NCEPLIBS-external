@@ -18,8 +18,6 @@ Instance: t2.xlarge instance with 4 cores and 16GB of memory was used, 100GB EBS
 sudo su
 # Optional: this is usually a good idea, but should be used with care (it may destroy your existing setup)
 yum update
-### # Install gcc-8.3.1, g++-8.3.1 and gfortran-8.3.1
-### yum install -y gcc-gfortran gcc-c++
 # Install wget-1.19.5
 yum install -y wget
 # Install git-2.18.2
@@ -41,8 +39,8 @@ yum install m4
 # Install gcc-9.2.1 - does this work w/o installing gcc-8.3.1 above?
 yum install gcc-toolset-9-gcc-c++.x86_64 gcc-toolset-9-gcc-gfortran.x86_64
 
-mkdir /usr/local/ufs-release-v1.1.0
-chown -R ec2-user:ec2-user /usr/local/ufs-release-v1.1.0
+mkdir /usr/local/ufs-develop
+chown -R ec2-user:ec2-user /usr/local/ufs-develop
 exit
 
 scl enable gcc-toolset-9 bash
@@ -51,7 +49,7 @@ export CC=gcc
 export CXX=g++
 export FC=gfortran
 
-cd /usr/local/ufs-release-v1.1.0
+cd /usr/local/ufs-develop
 mkdir src
 
 2.Install missing external libraries from NCEPLIBS-external
@@ -60,18 +58,19 @@ The user is referred to the top-level README.md for more detailed instructions o
 NCEPLIBS-external and configure it (e.g., how to turn off building certain packages such as MPI etc).
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
-cd /usr/local/ufs-release-v1.1.0/src
+cd /usr/local/ufs-develop/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 # Install cmake 3.16.3 (default OS version is too old)
 cd cmake-src
-./bootstrap --prefix=/usr/local/ufs-release-v1.1.0 2>&1 | tee log.bootstrap
+./bootstrap --prefix=/usr/local/ufs-develop 2>&1 | tee log.bootstrap
 make 2>&1 | tee log.make
 make install 2>&1 | tee log.install
 cd ..
 mkdir build && cd build
-/usr/local/ufs-release-v1.1.0/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
+/usr/local/ufs-develop/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
+# no make install needed
 
 
 3. Install NCEPLIBS
@@ -81,14 +80,14 @@ The user is referred to the top-level README.md of the NCEPLIBS GitHub repositor
 and build NCEPLIBS. The default configuration assumes that all dependencies were built
 by NCEPLIBS-external as described above.
 
-cd /usr/local/ufs-release-v1.1.0/src
+cd /usr/local/ufs-develop/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build
-/usr/local/ufs-release-v1.1.0/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 -DEXTERNAL_LIBS_DIR=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
+/usr/local/ufs-develop/bin/cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop -DCMAKE_PREFIX_PATH=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-make install 2>&1 | tee log.install
+# no make install needed
 
 
 - END OF THE SETUP INSTRUCTIONS -
@@ -104,12 +103,17 @@ the code are provided here: https://github.com/ufs-community/ufs-weather-model/w
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
+
 scl enable gcc-toolset-9 bash
 export CC=gcc
 export CXX=g++
 export FC=gfortran
 ulimit -s unlimited
-. /usr/local/ufs-release-v1.1.0/bin/setenv_nceplibs.sh
+export PATH=/usr/local/ufs-develop/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/ufs-develop/lib:/usr/local/ufs-develop/lib64:$PATH
+export NETCDF=/usr/local/ufs-develop
+export ESMFMKFILE=/usr/local/ufs-develop/lib64/esmf.mk
+# DH note: for some reason, this suffices and the system finds all the NCEP libraries;
+# possibly the LD_LIBRARY_PATH makes cmake search for cmake config files in the right place
 export CMAKE_Platform=linux.gnu
 ./build.sh 2>&1 | tee build.log
-
