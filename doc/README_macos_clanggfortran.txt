@@ -20,10 +20,10 @@ open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10
 
 (2) Create directories
 sudo su
-mkdir /usr/local/ufs-release-v1.1.0
-chown YOUR_USERNAME:YOUR_GROUPNAME /usr/local/ufs-release-v1.1.0
+mkdir /usr/local/ufs-develop
+chown YOUR_USERNAME:YOUR_GROUPNAME /usr/local/ufs-develop
 exit
-cd /usr/local/ufs-release-v1.1.0
+cd /usr/local/ufs-develop
 mkdir src
 
 (3) Install gcc-10.2.0/gfortran-10.2.0
@@ -63,29 +63,32 @@ The user is referred to the top-level README.md for more detailed instructions o
 NCEPLIBS-external and configure it (e.g., how to turn off building certain packages such as MPI etc).
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
-cd /usr/local/ufs-release-v1.1.0/src
+cd /usr/local/ufs-develop/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 # no make install needed
 
-3. Install NCEPLIBS
+
+3. Install NCEPLIBS - CURRENTLY BROKEN, STOP HERE. NEED TO ADD FORTRAN COMPILER FLAGS FOR GFORTRAN-10 SIMILAR TO WHAT WAS DONE FOR THE RELEASE/PUBLIC-V1 BRANCH; SEE ISSUE https://github.com/NOAA-EMC/NCEPLIBS/issues/106
+
+### FILE NEEDS UPDATE FROM HERE ON ###
 
 The user is referred to the top-level README.md of the NCEPLIBS GitHub repository
 (https://github.com/NOAA-EMC/NCEPLIBS/) for more detailed instructions on how to configure
 and build NCEPLIBS. The default configuration assumes that all dependencies were built
 by NCEPLIBS-external as described above.
 
-cd /usr/local/ufs-release-v1.1.0/src
+cd /usr/local/ufs-develop/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-release-v1.1.0 -DEXTERNAL_LIBS_DIR=/usr/local/ufs-release-v1.1.0 .. 2>&1 | tee log.cmake
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop -DCMAKE_PREFIX_PATH=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-make install 2>&1 | tee log.install
+# no make install needed
 
 
 - END OF THE SETUP INSTRUCTIONS -
@@ -108,7 +111,7 @@ export CXX=clang++-9
 export PATH="/usr/local/opt/llvm/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
 ulimit -S -s unlimited
-. /usr/local/ufs-release-v1.1.0/bin/setenv_nceplibs.sh
+. /usr/local/ufs-develop/bin/setenv_nceplibs.sh
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
 
