@@ -3,11 +3,11 @@ set -x
 
 ${PROJECT_SOURCE_DIR}/netcdf-c/configure \
     --disable-shared --disable-dap \
-    CC=${CMAKE_C_COMPILER} \
-    CXX=${CMAKE_CXX_COMPILER} \
+    CC=${MPI_C_COMPILER} \
+    CXX=${MPI_CXX_COMPILER} \
     --prefix=${CMAKE_INSTALL_PREFIX} \
     --libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} \
     --enable-parallel4 \
     CPPFLAGS="-I${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}" \
     LDFLAGS="-L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" \
-    LIBS="-lhdf5_hl -lhdf5 -lz -lm -ldl"
+    LIBS="-lhdf5_hl -lhdf5 -lsz -lz -lm -ldl"
