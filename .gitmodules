@@ -18,7 +18,7 @@
 	url = https://github.com/madler/zlib.git
 [submodule "esmf"]
 	path = esmf
-	url = https://git.code.sf.net/p/esmf/esmf
+	url = https://github.com/esmf-org/esmf
 [submodule "libjpeg"]
 	path = libjpeg
 	url = https://github.com/LuaDist/libjpeg
