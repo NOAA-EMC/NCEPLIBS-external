@@ -7,5 +7,6 @@ ${PROJECT_SOURCE_DIR}/netcdf-c/configure \
     CXX=${CMAKE_CXX_COMPILER} \
     --prefix=${CMAKE_INSTALL_PREFIX} \
     --libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} \
+    --enable-parallel4 \
     CPPFLAGS="-I${H5DIR}/include -I${ZDIR}/include" \
     LDFLAGS="-L${H5DIR}/${CMAKE_INSTALL_LIBDIR} -L${ZDIR}/${CMAKE_INSTALL_LIBDIR}"
