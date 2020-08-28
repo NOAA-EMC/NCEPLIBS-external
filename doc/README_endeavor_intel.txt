@@ -2,7 +2,7 @@ Setup instructions for Intel Endeavor using Intel-19.1.2.254
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation
 
-export INSTALL_PREFIX=/global/panfs/users/Xdheinz/ufs-stack-20200803/intel-19.1.2/impi-2019.8.254
+export INSTALL_PREFIX=/global/panfs/users/Xdheinz/ufs-stack-20200825/intel-19.1.2/impi-2019.8.254
 export PATH=${INSTALL_PREFIX}/bin:${PATH}
 
 . /opt/intel/compiler/2020u2/bin/compilervars.sh intel64
@@ -59,7 +59,7 @@ After checking out the code and changing to the top-level directory of ufs-weath
 the following commands should suffice to build the model.
 
 
-export INSTALL_PREFIX=/global/panfs/users/Xdheinz/ufs-stack-20200803/intel-19.1.2/impi-2019.8.254
+export INSTALL_PREFIX=/global/panfs/users/Xdheinz/ufs-stack-20200825/intel-19.1.2/impi-2019.8.254
 export PATH=${INSTALL_PREFIX}/bin:${PATH}
 
 . /opt/intel/compiler/2020u2/bin/compilervars.sh intel64
@@ -77,5 +77,4 @@ export NETCDF=${INSTALL_PREFIX}
 export ESMFMKFILE=${INSTALL_PREFIX}/lib64/esmf.mk
 export WGRIB2_ROOT=${INSTALL_PREFIX}
 
-# DH note: for some reason, this suffices and the system finds all the NCEP libraries
 ./build.sh 2>&1 | tee build.log
