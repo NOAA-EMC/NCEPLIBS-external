@@ -3,13 +3,13 @@ set -x
 
 ${PROJECT_SOURCE_DIR}/netcdf-fortran/configure \
     --disable-shared \
-    FC=${CMAKE_Fortran_COMPILER} \
-    F77=${CMAKE_Fortran_COMPILER} \
-    CC=${CMAKE_C_COMPILER} \
+    FC=${MPI_Fortran_COMPILER} \
+    F77=${MPI_Fortran_COMPILER} \
+    CC=${MPI_C_COMPILER} \
     --prefix=${CMAKE_INSTALL_PREFIX} \
     --libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} \
-    CPPFLAGS="-I${NCDIR}/include  -I${H5DIR}/include -I${ZDIR}/include" \
+    CPPFLAGS="-I${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}" \
     FFLAGS="${NETCDF_FORTRAN_FLAGS}" \
     FCFLAGS="${NETCDF_FORTRAN_FLAGS}" \
-    LDFLAGS="-L${NCDIR}/${CMAKE_INSTALL_LIBDIR} -L${H5DIR}/${CMAKE_INSTALL_LIBDIR} -L${ZDIR}/${CMAKE_INSTALL_LIBDIR}" \
-    LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz -lm -ldl"
+    LDFLAGS="-L${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" \
+    LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lsz -lz -lm -ldl"

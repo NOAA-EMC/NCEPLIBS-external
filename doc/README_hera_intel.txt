@@ -5,23 +5,16 @@ NOTE: set "export INSTALL_PREFIX=..." as required for your installation
 module purge
 module load intel/18.0.5.274
 module load impi/2018.0.4
-module load netcdf/4.7.0
 module load cmake/3.16.1
 module li
 
 > Currently Loaded Modules:
->  1) intel/18.0.5.274   2) impi/2018.0.4   3) netcdf/4.7.0   4) cmake/3.16.1
-
-# Note: HDF5 is in: /apps/hdf5/1.10.5/intel/18.0.5.274
-# Note: ZLIB and PNG are in: /usr/include, /usr/lib64/
+>  1) intel/18.0.5.274   2) impi/2018.0.4   3) cmake/3.16.1
 
 export CC=icc
 export CXX=icpc
 export FC=ifort
-export INSTALL_PREFIX=/scratch1/BMC/gmtb/Dom.Heinzeller/ufs-srweather-app/NCEPLIBS-test-20200813-intel
-
-export HDF5_ROOT=/apps/hdf5/1.10.5/intel/18.0.5.274
-export PNG_ROOT=/usr
+export INSTALL_PREFIX=/scratch1/BMC/gmtb/Dom.Heinzeller/NCEPlibs-develop/intel-18.0.5.274/impi-2018.0.4
 
 mkdir -p ${INSTALL_PREFIX}/src
 cd ${INSTALL_PREFIX}/src
@@ -29,8 +22,6 @@ cd ${INSTALL_PREFIX}/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-# If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
-#cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 
@@ -64,19 +55,19 @@ the following commands should suffice to build the model.
 module purge
 module load intel/18.0.5.274
 module load impi/2018.0.4
-module load netcdf/4.7.0
 module load cmake/3.16.1
 
 export CC=icc
 export CXX=icpc
 export FC=ifort
-export INSTALL_PREFIX=/scratch1/BMC/gmtb/Dom.Heinzeller/ufs-srweather-app/NCEPLIBS-test-20200813-intel
-
-export NETCDF=${INSTALL_PREFIX}
-export ESMFMKFILE=${INSTALL_PREFIX}/lib64/esmf.mk
-export WGRIB2_ROOT=${INSTALL_PREFIX}
+export INSTALL_PREFIX=/scratch1/BMC/gmtb/Dom.Heinzeller/NCEPlibs-develop/intel-18.0.5.274/impi-2018.0.4
 
 module use -a ${INSTALL_PREFIX}/modules
+
+module load netcdf/4.7.4
+module load esmf/8.1.0bs21
+module load wgrib2/2.0.8
+
 module load bacio/2.4.0
 module load nemsio/2.5.1
 module load sp/2.3.0

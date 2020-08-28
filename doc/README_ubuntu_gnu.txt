@@ -1,8 +1,6 @@
-##########################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-##########################################################################################
-
 ### Ubuntu Linux 20.04 LTS using gcc-8.3.0 and gfortran-8.3.0
+
+NOTE: set "export INSTALL_PREFIX=..." as required for your installation (twice in this file!)
 
 The following instructions were tested on a Ubuntu 18.04 Amazon EC2 compute node, which comes with
 essentially no packages installed. Many of the packages that are installed with apt in the
@@ -41,15 +39,17 @@ apt install -y gfortran-9 g++-9
 # Install cmake-3.16.3
 apt install -y cmake
 
-mkdir /usr/local/ufs-develop
-chown -R ubuntu:ubuntu /usr/local/ufs-develop
+export INSTALL_PREFIX=/usr/local/ufs-develop
+
+mkdir ${INSTALL_PREFIX}
+chown -R ubuntu:ubuntu ${INSTALL_PREFIX}
 exit
 
 export CC=gcc-9
 export CXX=g++-9
 export FC=gfortran-9
 
-cd /usr/local/ufs-develop
+cd ${INSTALL_PREFIX}
 mkdir src
 
 2.Install missing external libraries from NCEPLIBS-external
@@ -58,11 +58,11 @@ The user is referred to the top-level README.md for more detailed instructions o
 NCEPLIBS-external and configure it (e.g., how to turn off building certain packages such as MPI etc).
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
-cd /usr/local/ufs-develop/src
+cd ${INSTALL_PREFIX}/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 # no make install needed
 
@@ -74,12 +74,12 @@ The user is referred to the top-level README.md of the NCEPLIBS GitHub repositor
 and build NCEPLIBS. The default configuration assumes that all dependencies were built
 by NCEPLIBS-external as described above.
 
-cd /usr/local/ufs-develop/src
+cd ${INSTALL_PREFIX}/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop -DCMAKE_PREFIX_PATH=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 # no make install needed
 
@@ -102,11 +102,10 @@ export CC=gcc-9
 export CXX=g++-9
 export FC=gfortran-9
 ulimit -s unlimited
-export PATH=/usr/local/ufs-develop/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/ufs-develop/lib:$PATH
-export NETCDF=/usr/local/ufs-develop
-export ESMFMKFILE=/usr/local/ufs-develop/lib/esmf.mk
-# DH note: for some reason, this suffices and the system finds all the NCEP libraries;
-# possibly the LD_LIBRARY_PATH makes cmake search for cmake config files in the right place
+export INSTALL_PREFIX=/usr/local/ufs-develop
+export PATH=${INSTALL_PREFIX}/bin:$PATH
+export LD_LIBRARY_PATH=${INSTALL_PREFIX}/lib:$PATH
+export NETCDF=${INSTALL_PREFIX}
+export ESMFMKFILE=${INSTALL_PREFIX}/lib/esmf.mk
 export CMAKE_Platform=linux.gnu
 ./build.sh 2>&1 | tee build.log

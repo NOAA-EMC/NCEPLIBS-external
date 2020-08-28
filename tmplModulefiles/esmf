@@ -1,0 +1,12 @@
+#%Module######################################################################
+
+proc ModulesHelp { } {
+  puts "Set environment variables for esmf-${ESMF_VERSION}"
+}
+
+# Make sure another version of the same package is not already loaded
+conflict esmf
+
+# Set environment variables
+setenv ESMFMKFILE ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/esmf.mk
+prepend-path PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}

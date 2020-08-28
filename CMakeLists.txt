@@ -13,12 +13,13 @@ if(POLICY CMP0074)
 endif(POLICY CMP0074)
 
 # Tell cmake what to build
-option(BUILD_MPI "Build MPI?" ON)
-option(BUILD_ESMF "Build ESMF?" ON)
-option(BUILD_NETCDF "Build NetCDF?" ON)
-option(BUILD_JASPER "Build Jasper?" ON)
-option(BUILD_PNG "Build libpng?" ON)
-option(BUILD_WGRIB2 "Build wgrib2?" ON)
+option(BUILD_MPI     "Build MPI"               ON )
+option(BUILD_ESMF    "Build ESMF"              ON )
+option(BUILD_NETCDF  "Build NetCDF"            ON )
+option(BUILD_JASPER  "Build Jasper"            ON )
+option(BUILD_PNG     "Build libpng"            ON )
+option(BUILD_WGRIB2  "Build wgrib2"            ON )
+option(DEPLOY        "Deploy modulefiles"      OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -115,14 +116,24 @@ if(BUILD_NETCDF)
   set(HDF5_C_LIBRARY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(HDF5_HL_LIBRARY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(ZLIB_LIBRARY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
+  set(SZIP_LIBRARY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}sz${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(NETCDF_C_LIBRARY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}netcdf${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(NETCDF_Fortran_LIBRARY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}netcdff${CMAKE_STATIC_LIBRARY_SUFFIX})
-  set(NETCDF_LIBRARIES "${NETCDF_Fortran_LIBRARY} ${NETCDF_C_LIBRARY} ${HDF5_HL_LIBRARY} ${HDF5_C_LIBRARY} ${ZLIB_LIBRARY}")
+  set(NETCDF_LIBRARIES "${NETCDF_Fortran_LIBRARY} ${NETCDF_C_LIBRARY} ${HDF5_HL_LIBRARY} ${HDF5_C_LIBRARY} ${SZIP_LIBRARY} ${ZLIB_LIBRARY}")
 
-  # Used by configure_file for the configure scripts
-  set(NCDIR ${CMAKE_INSTALL_PREFIX})
-  set(H5DIR ${CMAKE_INSTALL_PREFIX})
-  set(ZDIR ${CMAKE_INSTALL_PREFIX})
+  ExternalProject_Add(szip
+    PREFIX ${PROJECT_BINARY_DIR}/szip
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/szip
+    BINARY_DIR ${PROJECT_BINARY_DIR}/szip/build
+    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+    CONFIGURE_COMMAND ${PROJECT_SOURCE_DIR}/szip/configure --enable-static --disable-shared --prefix=${CMAKE_INSTALL_PREFIX} --libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+    BUILD_COMMAND make
+    TEST_BEFORE_INSTALL TRUE
+    TEST_COMMAND cd ${PROJECT_BINARY_DIR}/szip/build && make test
+    INSTALL_COMMAND $(MAKE) install
+    )
+
+  file(APPEND ${CMAKE_CONFIG_FILE} "set(SZIP_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 
   ExternalProject_Add(hdf5
     PREFIX ${PROJECT_BINARY_DIR}/hdf5
@@ -133,19 +144,21 @@ if(BUILD_NETCDF)
     -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
     -DBUILD_SHARED_LIBS:BOOL=OFF
     -DHDF5_BUILD_FORTRAN:BOOL=ON
-    -DHDF5_ENABLE_PARALLEL=OFF
+    -DHDF5_ENABLE_PARALLEL=ON
     -DHDF5_BUILD_CPP_LIB=OFF
     -DHDF5_BUILD_HL_LIB:BOOL=ON
     -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON
     -DZLIB_ROOT=${CMAKE_INSTALL_PREFIX}
-    -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF
+    -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=ON
+    -DSZIP_ROOT=${CMAKE_INSTALL_PREFIX}
     -DCMAKE_BUILD_TYPE=RELEASE
     -DHDF5_INSTALL_LIB_DIR=${CMAKE_INSTALL_LIBDIR}
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/hdf5
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    TEST_BEFORE_INSTALL TRUE
-    TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
+    #TEST_BEFORE_INSTALL TRUE
+    #TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
     DEPENDS zlib
+    DEPENDS szip
     )
 
   # configure NetCDF configure script with installation locations of HDF, install location, etc
@@ -275,8 +288,8 @@ if(BUILD_WGRIB2)
       -DUSE_PNG=ON
       -DUSE_JASPER=ON
       -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-      -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
+      -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
+      -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
       -DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}
       DEPENDS jasper libpng netcdf-fortran
     )
@@ -337,4 +350,26 @@ if(BUILD_ESMF)
     DEPENDS mpi netcdf-fortran)
 
   file(APPEND ${CMAKE_CONFIG_FILE} "set(ESMFMKFILE \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/esmf.mk\")\n")
+endif()
+
+# Option to overwrite modulefile (if DEPLOY = ON)
+if(DEPLOY)
+  message(STATUS "Installing modulefiles at ${CMAKE_INSTALL_PREFIX}/modules")
+  if(BUILD_PNG)
+    set(PNG_VERSION "1.6.35")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/libpng ${CMAKE_INSTALL_PREFIX}/modules/libpng/${PNG_VERSION})
+  endif()
+  if(BUILD_NETCDF)
+    set(NETCDF_VERSION "4.7.4")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/netcdf ${CMAKE_INSTALL_PREFIX}/modules/netcdf/${NETCDF_VERSION})
+  endif()
+  if(BUILD_ESMF)
+    set(ESMF_VERSION "8.1.0bs21")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/esmf ${CMAKE_INSTALL_PREFIX}/modules/esmf/${ESMF_VERSION})
+  endif()
+  if(BUILD_WGRIB2)
+    set(WGRIB2_VERSION "2.0.8")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/wgrib2 ${CMAKE_INSTALL_PREFIX}/modules/wgrib2/${WGRIB2_VERSION})
+  endif()
+
 endif()
