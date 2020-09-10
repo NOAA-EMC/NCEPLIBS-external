@@ -1,0 +1,11 @@
+#%Module######################################################################
+
+proc ModulesHelp { } {
+  puts "Set environment variables for libpng-${PNG_VERSION}"
+}
+
+# Make sure another version of the same package is not already loaded
+conflict libpng
+
+# Set environment variables
+setenv PNG_ROOT ${CMAKE_INSTALL_PREFIX}

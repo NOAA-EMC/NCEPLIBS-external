@@ -1,0 +1,11 @@
+#%Module######################################################################
+
+proc ModulesHelp { } {
+  puts "Set environment variables for netcdf-${NETCDF_VERSION}"
+}
+
+# Make sure another version of the same package is not already loaded
+conflict netcdf
+
+# Set environment variables
+setenv NETCDF ${CMAKE_INSTALL_PREFIX}

@@ -13,12 +13,13 @@ if(POLICY CMP0074)
 endif(POLICY CMP0074)
 
 # Tell cmake what to build
-option(BUILD_MPI "Build MPI?" ON)
-option(BUILD_ESMF "Build ESMF?" ON)
-option(BUILD_NETCDF "Build NetCDF?" ON)
-option(BUILD_JASPER "Build Jasper?" ON)
-option(BUILD_PNG "Build libpng?" ON)
-option(BUILD_WGRIB2 "Build wgrib2?" ON)
+option(BUILD_MPI     "Build MPI"               ON )
+option(BUILD_ESMF    "Build ESMF"              ON )
+option(BUILD_NETCDF  "Build NetCDF"            ON )
+option(BUILD_JASPER  "Build Jasper"            ON )
+option(BUILD_PNG     "Build libpng"            ON )
+option(BUILD_WGRIB2  "Build wgrib2"            ON )
+option(DEPLOY        "Deploy modulefiles"      OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -143,8 +144,8 @@ if(BUILD_NETCDF)
     -DHDF5_INSTALL_LIB_DIR=${CMAKE_INSTALL_LIBDIR}
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/hdf5
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    TEST_BEFORE_INSTALL TRUE
-    TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
+    #TEST_BEFORE_INSTALL TRUE
+    #TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
     DEPENDS zlib
     )
 
@@ -337,4 +338,26 @@ if(BUILD_ESMF)
     DEPENDS mpi netcdf-fortran)
 
   file(APPEND ${CMAKE_CONFIG_FILE} "set(ESMFMKFILE \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/esmf.mk\")\n")
+endif()
+
+# Install modules (if DEPLOY = ON)
+if(DEPLOY)
+  message(STATUS "Installing modulefiles at ${CMAKE_INSTALL_PREFIX}/modules")
+  if(BUILD_PNG)
+    set(PNG_VERSION "1.6.35")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/libpng ${CMAKE_INSTALL_PREFIX}/modules/libpng/${PNG_VERSION})
+  endif()
+  if(BUILD_NETCDF)
+    set(NETCDF_VERSION "4.7.4")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/netcdf ${CMAKE_INSTALL_PREFIX}/modules/netcdf/${NETCDF_VERSION})
+  endif()
+  if(BUILD_ESMF)
+    set(ESMF_VERSION "8.1.0bs21")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/esmf ${CMAKE_INSTALL_PREFIX}/modules/esmf/${ESMF_VERSION})
+  endif()
+  if(BUILD_WGRIB2)
+    set(WGRIB2_VERSION "2.0.8")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/wgrib2 ${CMAKE_INSTALL_PREFIX}/modules/wgrib2/${WGRIB2_VERSION})
+  endif()
+
 endif()
