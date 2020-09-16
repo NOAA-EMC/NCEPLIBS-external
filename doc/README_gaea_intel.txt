@@ -1,6 +1,6 @@
-##########################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-##########################################################################################
+####################################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+####################################################################################################
 
 Setup instructions for NOAA RDHPC Gaea using Cray Intel-19.0.5.281
 

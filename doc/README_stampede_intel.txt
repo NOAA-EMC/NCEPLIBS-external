@@ -1,6 +1,6 @@
-##########################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-##########################################################################################
+####################################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+####################################################################################################
 
 Setup instructions for TACC Stampede using Intel-18.0.2
 

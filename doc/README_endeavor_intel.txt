@@ -1,3 +1,7 @@
+####################################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+####################################################################################################
+
 Setup instructions for Intel Endeavor using Intel-19.1.2.254
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation

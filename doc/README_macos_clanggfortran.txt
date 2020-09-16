@@ -1,6 +1,6 @@
-##########################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-##########################################################################################
+####################################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+####################################################################################################
 
 Setup instructions for macOS Mojave or Catalina using clang-10.0.0 + gfortran-10.2.0
 
@@ -111,7 +111,9 @@ export CXX=clang++-9
 export PATH="/usr/local/opt/llvm/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
 ulimit -S -s unlimited
-. /usr/local/ufs-develop/bin/setenv_nceplibs.sh
+
+### DH* TODO - HOW ??? . ${INSTALL_PREFIX}/bin/setenv_nceplibs.sh
+
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
 

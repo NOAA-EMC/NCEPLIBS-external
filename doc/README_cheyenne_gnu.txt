@@ -1,3 +1,7 @@
+####################################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+####################################################################################################
+
 Setup instructions for CISL Cheyenne using GNU-9.1.0
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation (twice in this file!)
