@@ -1,6 +1,6 @@
-##########################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-##########################################################################################
+####################################################################################################
+# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
+####################################################################################################
 
 Setup instructions for macOS Mojave or Catalina using gcc-10.2.0 + gfortran-10.2.0
 
@@ -20,10 +20,12 @@ open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10
 
 (2) Create directories
 sudo su
-mkdir /usr/local/ufs-develop
-chown YOUR_USERNAME:YOUR_GROUPNAME /usr/local/ufs-develop
+export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
+mkdir ${INSTALL_PREFIX}
+chown YOUR_USERNAME:YOUR_GROUPNAME ${INSTALL_PREFIX}
 exit
-cd /usr/local/ufs-develop
+export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
+cd ${INSTALL_PREFIX}
 mkdir src
 
 (3) Install gcc-10.2.0/gfortran-10.2.0
@@ -56,32 +58,27 @@ The user is referred to the top-level README.md for more detailed instructions o
 NCEPLIBS-external and configure it (e.g., how to turn off building certain packages such as MPI etc).
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
-cd /usr/local/ufs-develop/src
+cd ${INSTALL_PREFIX}/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-# no make install needed
 
 
-3. Install NCEPLIBS - CURRENTLY BROKEN, STOP HERE. NEED TO ADD FORTRAN COMPILER FLAGS FOR GFORTRAN-10 SIMILAR TO WHAT WAS DONE FOR THE RELEASE/PUBLIC-V1 BRANCH; SEE ISSUE https://github.com/NOAA-EMC/NCEPLIBS/issues/106
-
-### FILE NEEDS UPDATE FROM HERE ON ###
+3. Install NCEPLIBS
 
 The user is referred to the top-level README.md of the NCEPLIBS GitHub repository
 (https://github.com/NOAA-EMC/NCEPLIBS/) for more detailed instructions on how to configure
 and build NCEPLIBS. The default configuration assumes that all dependencies were built
 by NCEPLIBS-external as described above.
 
-cd /usr/local/ufs-develop/src
+cd ${INSTALL_PREFIX}/src
 git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop -DCMAKE_PREFIX_PATH=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-# no make install needed
 
 
 - END OF THE SETUP INSTRUCTIONS -
@@ -97,12 +94,16 @@ the code are provided here: https://github.com/ufs-community/ufs-weather-model/w
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
+export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
 
-export CC=gcc-9
-export FC=gfortran-9
-export CXX=g++-9
+export CC=gcc-10
+export FC=gfortran-10
+export CXX=g++-10
+
 ulimit -S -s unlimited
-. /usr/local/ufs-develop/bin/setenv_nceplibs.sh
+
+### DH* TODO - HOW ??? . ${INSTALL_PREFIX}/bin/setenv_nceplibs.sh
+
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
 

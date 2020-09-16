@@ -13,12 +13,12 @@ if(POLICY CMP0074)
 endif(POLICY CMP0074)
 
 # Tell cmake what to build
-option(BUILD_MPI "Build MPI?" ON)
-option(BUILD_ESMF "Build ESMF?" ON)
-option(BUILD_NETCDF "Build NetCDF?" ON)
-option(BUILD_JASPER "Build Jasper?" ON)
-option(BUILD_PNG "Build libpng?" ON)
-option(BUILD_WGRIB2 "Build wgrib2?" ON)
+option(BUILD_MPI     "Build MPI"               ON )
+option(BUILD_ESMF    "Build ESMF"              ON )
+option(BUILD_NETCDF  "Build NetCDF"            ON )
+option(BUILD_JASPER  "Build Jasper"            ON )
+option(BUILD_PNG     "Build libpng"            ON )
+option(DEPLOY        "Deploy modulefiles"      OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -28,7 +28,7 @@ if((BUILD_NETCDF OR BUILD_PNG) AND NOT (BUILD_NETCDF AND BUILD_PNG))
   message(FATAL_ERROR "NetCDF and PNG must both be built or both supplied externally")
 endif()
 
-set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "WGRIB2")
+set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG")
 set(libs_to_build)
 foreach(lib ${libs})
   if(BUILD_${lib})
@@ -143,8 +143,8 @@ if(BUILD_NETCDF)
     -DHDF5_INSTALL_LIB_DIR=${CMAKE_INSTALL_LIBDIR}
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/hdf5
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    TEST_BEFORE_INSTALL TRUE
-    TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
+    #TEST_BEFORE_INSTALL TRUE
+    #TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
     DEPENDS zlib
     )
 
@@ -260,30 +260,6 @@ else()
   find_package(Jasper REQUIRED)
 endif()
 
-if(BUILD_WGRIB2)
-
-  ExternalProject_Add(wgrib2
-    PREFIX ${PROJECT_BINARY_DIR}/wgrib2
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
-    BINARY_DIR ${PROJECT_BINARY_DIR}/wgrib2
-    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    CMAKE_ARGS
-      -DUSE_NETCDF4=ON
-      -DUSE_IPOLATES=0
-      -DUSE_SPECTRAL=OFF
-      -DMAKE_FTN_API=ON
-      -DUSE_PNG=ON
-      -DUSE_JASPER=ON
-      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-      -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
-      -DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}
-      DEPENDS jasper libpng netcdf-fortran
-    )
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(WGRIB2_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
-endif()
-
 if(BUILD_ESMF)
   if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
     set(comp "intel")
@@ -337,4 +313,21 @@ if(BUILD_ESMF)
     DEPENDS mpi netcdf-fortran)
 
   file(APPEND ${CMAKE_CONFIG_FILE} "set(ESMFMKFILE \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/esmf.mk\")\n")
+endif()
+
+# Install modules (if DEPLOY = ON)
+if(DEPLOY)
+  message(STATUS "Installing modulefiles at ${CMAKE_INSTALL_PREFIX}/modules")
+  if(BUILD_PNG)
+    set(PNG_VERSION "1.6.35")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/libpng ${CMAKE_INSTALL_PREFIX}/modules/libpng/${PNG_VERSION})
+  endif()
+  if(BUILD_NETCDF)
+    set(NETCDF_VERSION "4.7.4")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/netcdf ${CMAKE_INSTALL_PREFIX}/modules/netcdf/${NETCDF_VERSION})
+  endif()
+  if(BUILD_ESMF)
+    set(ESMF_VERSION "8.0.0")
+    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/esmf ${CMAKE_INSTALL_PREFIX}/modules/esmf/${ESMF_VERSION})
+  endif()
 endif()
