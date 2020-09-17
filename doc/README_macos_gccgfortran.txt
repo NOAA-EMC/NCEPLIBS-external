@@ -59,7 +59,7 @@ NCEPLIBS-external and configure it (e.g., how to turn off building certain packa
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
 cd ${INSTALL_PREFIX}/src
-git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
@@ -74,7 +74,7 @@ and build NCEPLIBS. The default configuration assumes that all dependencies were
 by NCEPLIBS-external as described above.
 
 cd ${INSTALL_PREFIX}/src
-git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
+git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
@@ -85,7 +85,7 @@ make -j8 2>&1 | tee log.make
 
 
 The following instructions are for building the ufs-weather-model (standalone;
-not the ufs-mrweather app - for the latter, the model is built by the workflow)
+not the UFS applications - for the latter, the model is built by the workflow)
 with those libraries installed.
 
 This is separate from NCEPLIBS-external and NCEPLIBS, and details on how to get
@@ -99,10 +99,11 @@ export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
 export CC=gcc-10
 export FC=gfortran-10
 export CXX=g++-10
-
 ulimit -S -s unlimited
 
-### DH* TODO - HOW ??? . ${INSTALL_PREFIX}/bin/setenv_nceplibs.sh
+export NETCDF=${INSTALL_PREFIX}
+export ESMFMKFILE=${INSTALL_PREFIX}/lib/esmf.mk
+export CMAKE_PREFIX_PATH=${INSTALL_PREFIX}
 
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
