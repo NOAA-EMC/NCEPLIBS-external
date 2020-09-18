@@ -81,8 +81,7 @@ by NCEPLIBS-external as described above.
 cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
-mkdir build
-cd build
+mkdir build && cd build
 ${INSTALL_PREFIX}/bin/cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
 

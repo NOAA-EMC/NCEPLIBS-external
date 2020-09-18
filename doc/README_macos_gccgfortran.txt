@@ -1,7 +1,3 @@
-####################################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH RELEASE/PUBLIC-V2 BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-####################################################################################################
-
 Setup instructions for macOS Mojave or Catalina using gcc-10.2.0 + gfortran-10.2.0
 
 The following instructions were tested on a clean macOS systems (Mojave 1.14.6 and Catalina 10.15.2).

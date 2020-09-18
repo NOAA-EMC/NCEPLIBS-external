@@ -27,7 +27,7 @@ export NETCDF=${TACC_NETCDF_DIR}
 export HDF5_ROOT=/opt/apps/intel18/hdf5/1.10.4/x86_64
 
 # DH* TEMPORARY - NEED SHARED LOCATION
-export INSTALL_PREFIX=/work/06146/tg854455/stampede2/NCEPLIBS-ufs-v2.0.0
+export INSTALL_PREFIX=/work/06146/tg854455/stampede2/NCEPLIBS-ufs-v2.0.0/intel-18.0.2/impi-18.0.2
 # *DH
 
 mkdir -p ${INSTALL_PREFIX}/src
@@ -81,7 +81,7 @@ export CXX=icpc
 export FC=ifort
 export NETCDF=${TACC_NETCDF_DIR}
 
-module use /work/06146/tg854455/stampede2/NCEPLIBS-ufs-v2.0.0/modules
+module use /work/06146/tg854455/stampede2/NCEPLIBS-ufs-v2.0.0/intel-18.0.2/impi-18.0.2/modules
 
 module load esmf/8.0.0
 

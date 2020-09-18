@@ -21,7 +21,7 @@ export FC=ftn
 export CXX=CC
 export MPI_ROOT=/opt/cray/pe/mpt/7.7.11/gni/mpich-intel/16.0
 
-export INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/NCEPLIBS-ufs-v2.0.0/intel-18.0.6.288/cray-mpich-7.7.11
+export INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/NCEPLIBS-ufs-v2.0.0/intel-19.0.5.281/cray-mpich-7.7.11
 
 mkdir -p ${INSTALL_PREFIX}/src
 cd ${INSTALL_PREFIX}/src
@@ -80,7 +80,7 @@ export CC=cc
 export FC=ftn
 export CXX=CC
 
-module use /lustre/f2/pdata/esrl/gsd/ufs/NCEPLIBS-ufs-v2.0.0/intel-18.0.6.288/cray-mpich-7.7.11/modules
+module use /lustre/f2/pdata/esrl/gsd/ufs/NCEPLIBS-ufs-v2.0.0/intel-19.0.5.281/cray-mpich-7.7.11/modules
 
 module load libpng/1.6.35
 module load netcdf/4.7.4
