@@ -87,6 +87,8 @@ with those libraries installed.
 This is separate from NCEPLIBS-external and NCEPLIBS, and details on how to get
 the code are provided here: https://github.com/ufs-community/ufs-weather-model/wiki
 
+git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
+
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
