@@ -1,8 +1,8 @@
-### Ubuntu Linux 20.04 LTS using gcc-8.3.0 and gfortran-8.3.0
+### Ubuntu Linux 20.04 LTS using gcc-9.3.0 and gfortran-9.3.0
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation (twice in this file!)
 
-The following instructions were tested on a Ubuntu 18.04 Amazon EC2 compute node, which comes with
+The following instructions were tested on a Ubuntu 20.04 Amazon EC2 compute node, which comes with
 essentially no packages installed. Many of the packages that are installed with apt in the
 following may already be installed on your system. Note that the apt Open MPI library did not
 work correctly in our tests, instead the NCEPLIBS-external MPICH version is used.

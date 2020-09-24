@@ -1,8 +1,8 @@
-### Red Hat Enterprise Linux 8.1 using gcc-9.2.1 and gfortran-9.2.1
+### Red Hat Enterprise Linux 8.2 using gcc-9.2.1 and gfortran-9.2.1
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation (twice in this file!)
 
-The following instructions were tested on a Red Hat 8 Amazon EC2 compute node, which comes with
+The following instructions were tested on a Red Hat 8.2 Amazon EC2 compute node, which comes with
 essentially no packages installed. Many of the packages that are installed with yum in the
 following may already be installed on your system. Note that the yum Open MPI library did not
 work correctly in our tests, instead the NCEPLIBS-external MPICH version is used.
@@ -109,6 +109,7 @@ export CC=gcc
 export CXX=g++
 export FC=gfortran
 ulimit -s unlimited
+
 export INSTALL_PREFIX=/usr/local/ufs-develop
 export PATH=${INSTALL_PREFIX}/bin:$PATH
 export LD_LIBRARY_PATH=${INSTALL_PREFIX}/lib:${INSTALL_PREFIX}/lib64:$PATH
