@@ -9,3 +9,4 @@ conflict netcdf
 
 # Set environment variables
 setenv NETCDF ${CMAKE_INSTALL_PREFIX}
+prepend-path PATH ${CMAKE_INSTALL_PREFIX}/bin
