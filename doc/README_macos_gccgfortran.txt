@@ -1,4 +1,4 @@
-Setup instructions for macOS Mojave or Catalina using gcc-10.2.0 + gfortran-10.2.0
+Setup instructions for macOS Mojave or Catalina using gcc-9.3.0 + gfortran-9.3.0
 
 The following instructions were tested on a clean macOS systems (Mojave 1.14.6 and Catalina 10.15.2).
 Homebrew is used to install the GNU (gcc+gfortran) compilers. Note that the export statements are
@@ -22,13 +22,13 @@ exit
 cd /usr/local/ufs-release-v1.1.0
 mkdir src
 
-(3) Install gcc-10.2.0/gfortran-10.2.0
+(3) Install gcc-9.3.0/gfortran-9.3.0
 
-brew install gcc@10
+brew install gcc@9
 
-export CC=gcc-10
-export FC=gfortran-10
-export CXX=g++-10
+export CC=gcc-9
+export FC=gfortran-9
+export CXX=g++-9
 
 (4) Install wget-1.20.3
 
