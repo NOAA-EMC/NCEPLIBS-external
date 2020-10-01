@@ -26,12 +26,14 @@ apt install -y libssl-dev
 apt install -y patch
 # Configure Python 3.6 as default
 update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
+# Install Python disttutils
+apt install -y python3-distutils
 # Install libxml2-utils-2.9.4 (for xmllint)
 apt install -y libxml2-utils
 # Install pkg-config-0.29.1
 apt install -y pkg-config
 # Install m4-1.4.18
-apt install m4
+apt install -y m4
 # Install gcc-8.3.0, g++-8.3.0 and gfortran-8.3.0
 apt install -y gfortran-8 g++-8
 
