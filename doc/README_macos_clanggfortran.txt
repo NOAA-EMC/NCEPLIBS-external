@@ -1,4 +1,4 @@
-Setup instructions for macOS Mojave or Catalina using clang-10.0.0 + gfortran-10.2.0
+Setup instructions for macOS Mojave or Catalina using clang-9.0.1 + gfortran-9.3.0
 
 The following instructions were tested on a clean macOS systems (Mojave 10.14.6 and Catalina 10.15.6).
 Homebrew is used to install the LLVM (clang+clang++) and GNU (gcc+gfortran) compilers. Note that the export statements
@@ -22,19 +22,19 @@ exit
 cd /usr/local/ufs-release-v1.1.0
 mkdir src
 
-(3) Install gcc-10.2.0/gfortran-10.2.0
+(3) Install gcc-9.3.0/gfortran-9.3.0
 
-brew install gcc@10
+brew install gcc@9
 
-(4) Install clang-10.0.0/clang++-10.0.0
+(4) Install clang-9.0.1/clang++-9.3.0
 
-brew install llvm@10
+brew install llvm@9
 
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/local/opt/llvm@9/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm@9/lib:$LD_LIBRARY_PATH"
 
 export CC=clang
-export FC=gfortran
+export FC=gfortran-9
 export CXX=clang++
 
 (5) Install wget-1.20.3
@@ -98,11 +98,11 @@ After checking out the code and changing to the top-level directory of ufs-weath
 the following commands should suffice to build the model.
 
 
-export CC=clang-9
+export CC=clang
 export FC=gfortran-9
-export CXX=clang++-9
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export CXX=clang++
+export PATH="/usr/local/opt/llvm@9/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm@9/lib:$LD_LIBRARY_PATH"
 ulimit -S -s unlimited
 . /usr/local/ufs-release-v1.1.0/bin/setenv_nceplibs.sh
 export CMAKE_Platform=macosx.gnu
