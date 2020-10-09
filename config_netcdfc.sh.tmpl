@@ -8,4 +8,5 @@ ${PROJECT_SOURCE_DIR}/netcdf-c/configure \
     --prefix=${CMAKE_INSTALL_PREFIX} \
     --libdir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} \
     CPPFLAGS="-I${H5DIR}/include -I${ZDIR}/include" \
-    LDFLAGS="-L${H5DIR}/${CMAKE_INSTALL_LIBDIR} -L${ZDIR}/${CMAKE_INSTALL_LIBDIR}"
+    LDFLAGS="-L${H5DIR}/${CMAKE_INSTALL_LIBDIR} -L${ZDIR}/${CMAKE_INSTALL_LIBDIR}" \
+    LIBS="-lhdf5_hl -lhdf5 -lz -lm -ldl"

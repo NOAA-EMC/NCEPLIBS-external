@@ -32,8 +32,10 @@ brew install gcc@10
 
 brew install llvm@10
 
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/local/opt/llvm@10/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm@10/lib:$LD_LIBRARY_PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm@10/include"
+export LDFLAGS="-L/usr/local/opt/llvm@10/lib -Wl,-rpath,/usr/local/opt/llvm@10/lib"
 
 export CC=clang
 export FC=gfortran
@@ -101,11 +103,10 @@ the following commands should suffice to build the model.
 
 export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
 
-export CC=clang-9
-export FC=gfortran-9
-export CXX=clang++-9
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/local/opt/llvm@10/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm@10/lib:$LD_LIBRARY_PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm@10/include"
+export LDFLAGS="-L/usr/local/opt/llvm@10/lib -Wl,-rpath,/usr/local/opt/llvm@10/lib"
 ulimit -S -s unlimited
 
 export NETCDF=${INSTALL_PREFIX}
