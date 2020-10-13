@@ -2,7 +2,7 @@ Setup instructions for NOAA WCOSS DELL machine using Intel-18.0.1.163
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation
 
-export INSTALL_PREFIX=/gpfs/dell2/emc/_YOUR_GROUP_/noscrub/$USER/wrk/UFS_build
+export INSTALL_PREFIX=/usrx/local/nceplibs/dev/NCEPLIBS/cmake/install/NCEPLIBS
 
 . /usrx/local/prod/lmod/lmod/init/sh
 module purge
@@ -58,8 +58,8 @@ the code are provided here: https://github.com/ufs-community/ufs-weather-model/w
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
+export INSTALL_PREFIX=/usrx/local/nceplibs/dev/NCEPLIBS/cmake/install/NCEPLIBS
 
-cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
 cd ufs-weather-model
 
@@ -79,20 +79,27 @@ module load ips/18.0.1.163
 module load impi/18.0.1
 module load lsf/10.1
 module load cmake/3.16.2
+module load python/2.7.14
 
 module use ${INSTALL_PREFIX}/modules
-module load esmf/8.0.0
-module load bacio/2.4.1
+module load bacio/2.4.0
 module load crtm/2.3.0
-module load g2/3.4.1
-module load g2tmpl/1.9.1
-module load ip/3.3.3
+module load g2/3.4.0
+module load g2tmpl/1.9.0
+module load ip/3.3.0
 module load nceppost/dceca26
-module load nemsio/2.5.2
-module load sp/2.3.3
-module load w3emc/2.7.3
-module load w3nco/2.4.1
-module load gfsio/1.4.1
-module load sfcio/1.4.1
-module load sigio/2.3.2
+module load nemsio/2.5.1
+module load sp/2.3.0
+module load w3emc/2.7.0
+module load w3nco/2.4.0
+module load gfsio/1.4.0
+module load sfcio/1.4.0
+module load sigio/2.3.0
+module load jasper/1.900.29
+
+module use /gpfs/dell2/emc/modeling/noscrub/emc.nemspara/soft/modulefiles
+module load hdf5_parallel/1.10.6
+module load netcdf_parallel/4.7.4
+module load esmf/8.0.0_ParallelNetCDF
+
 ./build.sh 2>&1 | tee build.log
