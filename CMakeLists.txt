@@ -13,12 +13,12 @@ if(POLICY CMP0074)
 endif(POLICY CMP0074)
 
 # Tell cmake what to build
-option(BUILD_MPI     "Build MPI"               ON )
-option(BUILD_ESMF    "Build ESMF"              ON )
-option(BUILD_NETCDF  "Build NetCDF"            ON )
-option(BUILD_JASPER  "Build Jasper"            ON )
-option(BUILD_PNG     "Build libpng"            ON )
-option(DEPLOY        "Deploy modulefiles"      OFF)
+option(BUILD_MPI     "Build MPI"               ON)
+option(BUILD_ESMF    "Build ESMF"              ON)
+option(BUILD_NETCDF  "Build NetCDF"            ON)
+option(BUILD_JASPER  "Build Jasper"            ON)
+option(BUILD_PNG     "Build libpng"            ON)
+option(DEPLOY        "Deploy modulefiles"      ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
