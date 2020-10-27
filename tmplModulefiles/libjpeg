@@ -1,0 +1,11 @@
+#%Module######################################################################
+
+proc ModulesHelp { } {
+  puts "Set environment variables for libjpeg-${JPEG_VERSION}"
+}
+
+# Make sure another version of the same package is not already loaded
+conflict libjpeg
+
+# Set environment variables
+setenv JPEG_ROOT ${CMAKE_INSTALL_PREFIX}
