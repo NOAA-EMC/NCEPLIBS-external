@@ -13,9 +13,7 @@ export CC=icc
 export CXX=icpc
 export FC=ifort
 
-# DH* TEMPORARY - NEED SHARED LOCATION
-export INSTALL_PREFIX=/work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v2.0.0/intel-19.1.0.166/impi-2020.0.166
-# *DH
+export INSTALL_PREFIX=/apps/contrib/NCEP/libs/NCEPLIBS-ufs-v2.0.0/intel-19.1.0.166/impi-2020.0.166
 
 mkdir -p ${INSTALL_PREFIX}/src
 cd ${INSTALL_PREFIX}/src
@@ -58,8 +56,7 @@ module load intel/2020
 module load impi/2020
 module load cmake/3.15.4
 
-module use /work/noaa/gmtb/dheinzel/NCEPLIBS-ufs-v2.0.0/intel-19.1.0.166/impi-2020.0.166/modules
-
+module use /apps/contrib/NCEP/libs/NCEPLIBS-ufs-v2.0.0/intel-19.1.0.166/impi-2020.0.166/modules
 module load NCEPLIBS/2.0.0
 
 export CMAKE_C_COMPILER=mpiicc
