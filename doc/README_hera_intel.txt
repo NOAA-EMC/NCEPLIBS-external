@@ -55,7 +55,6 @@ module load impi/2018.0.4
 module load cmake/3.16.1
 
 module use /scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v2.0.0/intel-18.0.5.274/impi-2018.0.4/modules
-
 module load NCEPLIBS/2.0.0
 
 export CMAKE_C_COMPILER=mpiicc
