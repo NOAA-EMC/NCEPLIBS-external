@@ -31,4 +31,4 @@ jobs:
         cd build
         cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
         make -j4
-        cat install/share/nceplibs-external.cmake.config
+        cat install/modules/esmf/8.0.0
