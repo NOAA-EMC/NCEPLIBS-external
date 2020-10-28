@@ -97,7 +97,6 @@ the following commands should suffice to build the model.
 source /usr/local/NCEPLIBS-ufs-v2.0.0/bin/setenv_nceplibs.sh
 ulimit -S -s unlimited
 
-
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
 

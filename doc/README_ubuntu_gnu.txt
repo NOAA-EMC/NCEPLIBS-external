@@ -76,8 +76,10 @@ cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
+export ESMFMKFILE=${INSTALL_PREFIX}/lib/esmf.mk
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
+make deploy 2>&1 | tee log.deploy
 
 
 - END OF THE SETUP INSTRUCTIONS -
@@ -95,19 +97,8 @@ git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
-export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
-
-export CC=mpicc
-export CXX=mpicxx
-export FC=mpif90
-
+source /usr/local/NCEPLIBS-ufs-v2.0.0/bin/setenv_nceplibs.sh
 ulimit -s unlimited
-
-export PATH=${INSTALL_PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${INSTALL_PREFIX}/lib:$PATH
-export NETCDF=${INSTALL_PREFIX}
-export ESMFMKFILE=${INSTALL_PREFIX}/lib/esmf.mk
-export CMAKE_PREFIX_PATH=${INSTALL_PREFIX}
 
 export CMAKE_Platform=linux.gnu
 ./build.sh 2>&1 | tee build.log
