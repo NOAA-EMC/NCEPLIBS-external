@@ -33,14 +33,15 @@ cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DDEPLOY=ON .. 2>&1 | tee log.cmake
+cmake -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8
 
 cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DDEPLOY=ON -DOPENMP=ON .. 2>&1 | tee log.cmake
+export ESMFMKFILE=${INSTALL_PREFIX}/lib64/esmf.mk
+cmake -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make deploy 2>&1 | tee log.deploy
 
@@ -63,15 +64,6 @@ export INSTALL_PREFIX=/usrx/local/nceplibs/dev/NCEPLIBS/cmake/install/NCEPLIBS
 git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
 cd ufs-weather-model
 
-export CC=icc
-export CXX=icpc
-export FC=ifort
-
-export CMAKE_C_COMPILER=mpiicc
-export CMAKE_CXX_COMPILER=mpiicpc
-export CMAKE_Fortran_COMPILER=mpiifort
-export CMAKE_Platform=wcoss_dell_p3
-
 . /usrx/local/prod/lmod/lmod/init/sh
 module purge
 module load EnvVars/1.0.3
@@ -82,24 +74,16 @@ module load cmake/3.16.2
 module load python/2.7.14
 
 module use ${INSTALL_PREFIX}/modules
-module load bacio/2.4.0
-module load crtm/2.3.0
-module load g2/3.4.0
-module load g2tmpl/1.9.0
-module load ip/3.3.0
-module load nceppost/dceca26
-module load nemsio/2.5.1
-module load sp/2.3.0
-module load w3emc/2.7.0
-module load w3nco/2.4.0
-module load gfsio/1.4.0
-module load sfcio/1.4.0
-module load sigio/2.3.0
-module load jasper/1.900.29
+module load NCEPLIBS/2.0.0
 
 module use /gpfs/dell2/emc/modeling/noscrub/emc.nemspara/soft/modulefiles
 module load hdf5_parallel/1.10.6
 module load netcdf_parallel/4.7.4
 module load esmf/8.0.0_ParallelNetCDF
+
+export CMAKE_C_COMPILER=mpiicc
+export CMAKE_CXX_COMPILER=mpiicpc
+export CMAKE_Fortran_COMPILER=mpiifort
+export CMAKE_Platform=wcoss_dell_p3
 
 ./build.sh 2>&1 | tee build.log

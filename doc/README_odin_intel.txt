@@ -36,19 +36,17 @@ git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-externa
 cd NCEPLIBS-external
 mkdir build && cd build
 # If netCDF is not built, also don't build PNG, because netCDF uses the default (OS) zlib in the search path
-$CMAKE -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DMPITYPE=mpi -DDEPLOY=ON .. 2>&1 | tee log.cmake
+$CMAKE -DBUILD_PNG=OFF -DBUILD_MPI=OFF -DBUILD_NETCDF=OFF -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DMPITYPE=mpi .. 2>&1 | tee log.cmake
 srun -n 1 make VERBOSE=1 -j8 2>&1 | tee log.make
 
 cd $SRC_DIR
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-$CMAKE -DEXTERNAL_LIBS_DIR=$INSTALL_PREFIX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DOPENMP=ON -DDEPLOY=ON .. 2>&1 | tee log.cmake
+export ESMFMKFILE=${INSTALL_PREFIX}/lib64/esmf.mk
+$CMAKE -DEXTERNAL_LIBS_DIR=$INSTALL_PREFIX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DOPENMP=ON .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j8 2>&1 | tee log.make
 make deploy 2>&1 | tee log.deploy
-cd ..
-# Convert lua modulefiles into tcl modulefiles
-lua2tcl.py $INSTALL_PREFIX/modules
 
 
 - END OF THE SETUP INSTRUCTIONS -
@@ -84,34 +82,14 @@ module load gcc/8.3.0
 
 export NETCDF=${CRAY_NETCDF_DIR}
 export CMAKE=/scratch/software/Odin/bin/cmake
-export CC=cc
-export FC=ftn
-export CXX=cc
+
+module use /scratch/ywang/comFV3SAR/testings/INSTALL/modules
+module load NCEPLIBS/2.0.0
+
+# In file build.sh, change "cmake" to "$CMAKE" to use cmake version 3.17.3 in the system.
 
 export CMAKE_C_COMPILER=cc
 export CMAKE_CXX_COMPILER=CC
 export CMAKE_Fortran_COMPILER=ftn
-
-module use /scratch/ywang/comFV3SAR/testings/INSTALL/modules
-
-module load esmf/8.0.0
-
-module load bacio/2.4.1
-module load crtm/2.3.0
-module load g2/3.4.1
-module load g2tmpl/1.9.1
-module load ip/3.3.3
-module load nceppost/dceca26
-module load nemsio/2.5.2
-module load sp/2.3.3
-module load w3emc/2.7.3
-module load w3nco/2.4.1
-
-module load gfsio/1.4.1
-module load sfcio/1.4.1
-module load sigio/2.3.2
-
-# In file build.sh, change "cmake" to "$CMAKE" to use cmake version 3.17.3 in the system.
-
 export CMAKE_Platform=odin.intel
 ./build.sh 2>&1 | tee build.log
