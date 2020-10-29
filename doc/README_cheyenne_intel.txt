@@ -24,14 +24,15 @@ cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DDEPLOY=ON .. 2>&1 | tee log.cmake
+cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j2 2>&1 | tee log.make
 
 cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
 mkdir build && cd build
-cmake -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DOPENMP=ON -DDEPLOY=ON .. 2>&1 | tee log.cmake
+export ESMFMKFILE=${INSTALL_PREFIX}/lib64/esmf.mk
+cmake -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
 make VERBOSE=1 -j2 2>&1 | tee log.make
 make deploy 2>&1 | tee log.deploy
 
@@ -59,30 +60,8 @@ module load mpt/2.19
 module load ncarcompilers/0.5.0
 module load cmake/3.16.4
 
-export CC=mpicc
-export FC=mpif90
-export CXX=mpicxx
-
 module use /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v2.0.0/intel-19.1.1/mpt-2.19/modules
-
-module load libpng/1.6.35
-module load netcdf/4.7.4
-module load esmf/8.0.0
-
-module load bacio/2.4.1
-module load crtm/2.3.0
-module load g2/3.4.1
-module load g2tmpl/1.9.1
-module load ip/3.3.3
-module load nceppost/dceca26
-module load nemsio/2.5.2
-module load sp/2.3.3
-module load w3emc/2.7.3
-module load w3nco/2.4.1
-
-module load gfsio/1.4.1
-module load sfcio/1.4.1
-module load sigio/2.3.2
+module load NCEPLIBS/2.0.0
 
 export CMAKE_Platform=cheyenne.intel
 ./build.sh 2>&1 | tee build.log

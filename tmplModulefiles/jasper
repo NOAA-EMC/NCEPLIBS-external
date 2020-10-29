@@ -1,0 +1,11 @@
+#%Module######################################################################
+
+proc ModulesHelp { } {
+  puts "Set environment variables for jasper-${JASPER_VERSION}"
+}
+
+# Make sure another version of the same package is not already loaded
+conflict jasper
+
+# Set environment variables
+setenv JASPER_ROOT ${CMAKE_INSTALL_PREFIX}
