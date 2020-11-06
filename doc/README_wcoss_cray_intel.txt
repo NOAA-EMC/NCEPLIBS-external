@@ -2,7 +2,7 @@ Setup instructions for NOAA WCOSS Cray machine using Intel-19.0.5.281
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation
 
-export INSTALL_PREFIX=/usrx/local/nceplibs/NCEPLIBS/cmake/install/NCEPLIBS_UFS
+export INSTALL_PREFIX=/usrx/local/nceplibs/NCEPLIBS/NCEPLIBS-ufs-v2.0.0/intel-19.0.5.281/impi-2019
 
 . /opt/modules/3.2.10.3/init/sh
 module purge
@@ -68,7 +68,7 @@ the code are provided here: https://github.com/ufs-community/ufs-weather-model/w
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
-export INSTALL_PREFIX=/usrx/local/nceplibs/NCEPLIBS/cmake/install/NCEPLIBS_UFS
+export INSTALL_PREFIX=/usrx/local/nceplibs/NCEPLIBS/NCEPLIBS-ufs-v2.0.0/intel-19.0.5.281/impi-2019
 
 . /opt/modules/3.2.10.3/init/sh
 module purge
