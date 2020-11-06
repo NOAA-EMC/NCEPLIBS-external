@@ -85,11 +85,16 @@ module load git/2.18.0
 module use ${INSTALL_PREFIX}/modules
 module load NCEPLIBS/2.0.0
 module load esmf jasper libpng libjpeg netcdf
+module li
 
-export CMAKE_C_COMPILER=mpiicc
-export CMAKE_CXX_COMPILER=mpiicpc
-export CMAKE_Fortran_COMPILER=mpiifort
-export CMAKE_Platform=wcoss_dell_p3
+export CC=cc
+export FC=ftn
+export CXX=CC
+
+export CMAKE_C_COMPILER=cc
+export CMAKE_CXX_COMPILER=CC
+export CMAKE_Fortran_COMPILER=ftn
+export CMAKE_Platform=wcoss_cray
 
 git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
 cd ufs-weather-model
