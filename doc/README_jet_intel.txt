@@ -64,9 +64,9 @@ export INSTALL_PREFIX=/lfs4/HFIP/hfv3gfs/software/NCEPlibs-develop/intel-18.0.5.
 
 module use -a ${INSTALL_PREFIX}/modules
 
+module load libpng/1.6.35
 module load netcdf/4.7.4
-module load esmf/8.1.0bs21
-module load wgrib2/2.0.8
+module load esmf/8.1.0bs27
 
 module load bacio/2.4.0
 module load nemsio/2.5.1
@@ -79,6 +79,7 @@ module load g2/3.4.0
 module load g2tmpl/1.9.0
 module load ip/3.3.0
 module load crtm/2.3.0
+module load wgrib2/2.0.8
 
 export CMAKE_Platform=jet.intel
 ./build.sh 2>&1 | tee build.log

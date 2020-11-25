@@ -76,9 +76,9 @@ module li
 export CMAKE_C_COMPILER=cc
 export CMAKE_CXX_COMPILER=CC
 export CMAKE_Fortran_COMPILER=ftn
-export INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/intel-19.0.5.281/cray-mpich-7.7.11
 
-module use -a ${INSTALL_PREFIX}/modules
+export INSTALL_PREFIX=/lustre/f2/pdata/esrl/gsd/ufs/modules/modulefiles/intel-19.0.5.281/cray-mpich-7.7.11
+module use ${INSTALL_PREFIX}/modules
 
 module load netcdf/4.7.4
 module load esmf/8.1.0bs21
