@@ -1,22 +1,22 @@
-Setup instructions for CISL Cheyenne using GNU-9.1.0
+Setup instructions for CISL Cheyenne using GNU-10.1.0
 
 NOTE: set "export INSTALL_PREFIX=..." as required for your installation (twice in this file!)
 
 module purge
 module load ncarenv/1.3
-module load gnu/9.1.0
+module load gnu/10.1.0
 module load mpt/2.19
 module load ncarcompilers/0.5.0
 module load cmake/3.16.4
 module li
 
 > Currently Loaded Modules:
->  1) ncarenv/1.3   2) gnu/9.1.0   3) mpt/2.19   4) ncarcompilers/0.5.0   5) cmake/3.16.4
+>  1) ncarenv/1.3   2) gnu/10.1.0   3) mpt/2.19   4) ncarcompilers/0.5.0   5) cmake/3.16.4
 
 export CC=mpicc
 export FC=mpif90
 export CXX=mpicxx
-export INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v2.0.0/gnu-9.1.0/mpt-2.19
+export INSTALL_PREFIX=/glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v2.0.0/gnu-10.1.0/mpt-2.19
 
 mkdir -p ${INSTALL_PREFIX}/src
 cd ${INSTALL_PREFIX}/src
@@ -55,12 +55,12 @@ the following commands should suffice to build the model.
 
 module purge
 module load ncarenv/1.3
-module load gnu/9.1.0
+module load gnu/10.1.0
 module load mpt/2.19
 module load ncarcompilers/0.5.0
 module load cmake/3.16.4
 
-module use /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v2.0.0/gnu-9.1.0/mpt-2.19/modules
+module use /glade/p/ral/jntp/GMTB/tools/NCEPLIBS-ufs-v2.0.0/gnu-10.1.0/mpt-2.19/modules
 module load NCEPLIBS/2.0.0
 
 export CMAKE_Platform=cheyenne.gnu
