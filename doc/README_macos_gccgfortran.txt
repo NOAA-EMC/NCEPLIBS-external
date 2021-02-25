@@ -100,3 +100,21 @@ ulimit -S -s unlimited
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
 
+
+4. Install Python packages for the UFS SRW Application (regional workflow, plotting)
+
+The suggested approach is to install the Python miniconda3 distribution and the necessary Python modules. It is possible to skip the automatic conda initialization in `.bash_profile` and instead run the conda init command by hand or create a script to source.
+
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh
+# init conda or create script to source that contains the following line, unless conda init is added to .bash_profile
+eval "$(/path/to/your/conda/installation/bin/conda shell.bash hook)"
+conda create --name regional_workflow
+conda activate regional_workflow
+conda install -c conda-forge f90nml
+conda install jinja2
+conda install pyyaml
+conda install cartopy
+conda install matplotlib
+conda install scipy
+conda install -c conda-forge pygrib

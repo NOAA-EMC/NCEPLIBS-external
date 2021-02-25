@@ -7,11 +7,13 @@ work correctly in our tests, instead the NCEPLIBS-external MPICH version is used
 
 AMI: RHEL-8.2.0_HVM-20200423-x86_64-0-Hourly2-GP2 (ami-098f16afa9edf40be)
 
-Instance: t2.xlarge instance with 4 cores and 16GB of memory was used, 100GB EBS
+Instance: t2.2xlarge instance with 8 cores and 32GB of memory was used, 100GB EBS
 
 1. Install the GNU compilers and other utilities
 
 sudo su
+# Add epel repository
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 # Optional: this is usually a good idea, but should be used with care (it may destroy your existing setup)
 yum update
 # Install wget-1.19.5
@@ -25,13 +27,23 @@ yum install -y openssl-devel
 # Install patch-2.7.6
 yum install -y patch
 # Install Python-3.8.0
-yum install -y python38
+yum install -y python38 python38-devel
 alternatives --config python
 # choose /usr/bin/python3
+# Install python38-pip-wheel-19.3.1
+yum install python38-pip-wheel
 # Install libxml2-2.9.7 (for xmllint)
 yum install libxml2
 # Install m4-1.4.18
 yum install m4
+# Install time-1.9
+yum install time
+# Install bc-1.07.1
+yum install bc
+# Install proj- 6.3.2
+yum install proj-devel
+# Install geos-3.7.2
+yum install geos-devel
 # Install gcc-9.2.1 - does this work w/o installing gcc-8.3.1 above?
 yum install gcc-toolset-9-gcc-c++.x86_64 gcc-toolset-9-gcc-gfortran.x86_64
 
@@ -108,3 +120,25 @@ ulimit -s unlimited
 
 export CMAKE_Platform=linux.gnu
 ./build.sh 2>&1 | tee build.log
+
+
+4. Install Python packages for the UFS SRW Application (regional workflow, plotting)
+
+sudo su
+scl enable gcc-toolset-9 bash
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+
+pip3 install f90nml
+pip3 install pyyaml
+pip3 install jinja2
+pip3 install pygrib
+pip3 install cartopy
+pip3 install matplotlib
+pip3 install scipy
+
+# Fix incompatible shapely version
+pip3 uninstall shapely
+pip3 install shapely --no-binary shapely
+exit
