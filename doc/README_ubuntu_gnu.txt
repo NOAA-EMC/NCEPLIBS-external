@@ -7,7 +7,7 @@ work correctly in our tests, instead the NCEPLIBS-external MPICH version is used
 
 AMI: ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20200729 (ami-0758470213bdd23b1)
 
-Instance: t2.xlarge instance with 4 cores and 16GB of memory was used, 100GB EBS
+Instance: t2.2xlarge instance with 8 cores and 32GB of memory was used, 100GB EBS
 
 1. Install the GNU compilers and other utilities
 
@@ -26,6 +26,8 @@ apt install -y libssl-dev
 apt install -y patch
 # Configure Python 3.8 as default
 update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+# Install pip3-20.0.2
+apt install python3-pip
 # Install libxml2-utils-2.9.10 (for xmllint)
 apt install -y libxml2-utils
 # Install pkg-config-0.29.1
@@ -36,6 +38,12 @@ apt install m4
 apt install -y gfortran-9 g++-9
 # Install cmake-3.16.3
 apt install -y cmake
+# Install unzip-6.0-25
+apt install unzip
+# Install geos-3.8.0
+apt install libgeos-dev
+# Install proj-6.3.1
+apt install libproj-dev
 
 export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
 
@@ -46,7 +54,6 @@ exit
 export CC=gcc-9
 export CXX=g++-9
 export FC=gfortran-9
-export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
 
 cd ${INSTALL_PREFIX}
 mkdir src
@@ -102,3 +109,16 @@ ulimit -s unlimited
 
 export CMAKE_Platform=linux.gnu
 ./build.sh 2>&1 | tee build.log
+
+
+4. Install Python packages for the UFS SRW Application (regional workflow, plotting)
+
+sudo su
+pip3 install f90nml
+pip3 install pyyaml
+pip3 install jinja2
+pip3 install pygrib
+pip3 install cartopy
+pip3 install matplotlib
+pip3 install scipy
+exit
