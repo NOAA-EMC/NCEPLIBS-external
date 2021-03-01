@@ -1,3 +1,5 @@
+# Short-Range Weather App Public Release in Docker
+
 This document explains how to run the SRW public release, version 1,
 in a Docker container. We will run twice: once by building an image,
 and a second time manually.
@@ -16,8 +18,7 @@ that, you would read the sections in this order instead: 1, 2, 7, 4,
 5, 6
 
 
-1. Get Docker
--------------
+## Section 1: Get Docker
 
 ### Security Risks
 
@@ -56,8 +57,7 @@ Relevant pages for Ubuntu and RedHat/CentOS:
 
 
 
-2. Download The Files
----------------------
+## Section 2: Download The Files
 
 You need to download seven files.
 
@@ -126,8 +126,7 @@ The files:
        - https://ftp.emc.ncep.noaa.gov/EIB/UFS/SRW/v1p0/simple_test_case/gst_model_data.tar.gz
        - https://ufs-data.s3.amazonaws.com/public_release/ufs-srweather-app-v1.0.0/ic/gst_model_data.tar.gz
 
-3. Create the Docker Image
---------------------------
+## Section 3: Create the Docker Image
 
 1. Put all seven files you downloaded in one directory.
 
@@ -151,11 +150,11 @@ The files:
    set the LAYOUT_X, LAYOUT_Y, RUN_CMD_UTILS, and RUN_CMD_POST
    variables.
 
-3. LOW MEMORY MACHINES - The workflow takes about 16 GB of RAM, on top
-   of the memory your OS and other applications use. If you don't have
-   significantly more than 16 GB of RAM, then use the 4 core config,
-   but reduce the utilities to one MPI rank. Do that by putting this
-   at the end of config.sh:
+3. LOW MEMORY MACHINES - The workflow used more than 16 GB of RAM, on
+   top of the memory your OS and other applications use. If you don't
+   have significantly more than 16 GB of RAM, then use the 4 core
+   config, but reduce the utilities to one MPI rank. Do that by
+   putting this at the end of config.sh:
 
        RUN_CMD_UTILS="mpirun -np 1"
 
@@ -215,8 +214,7 @@ The files:
 9. There should be a $HOST_TEMP_DIR/model_data/FV3GFS/2019061500 directory.
 
 
-4. Start the Workflow
----------------------
+## Section 4: Start the Workflow
 
 1. Start a docker container from the image you just built:
 
@@ -270,8 +268,7 @@ operating system:
 
         [1] 24737
 
-5. Monitor the Workflow
------------------------
+## Section 5: Monitor the Workflow
 
 This section explains several ways to monitor the workflow. If you
 don't want to monitor it in detail, just wait for the workflow to end
@@ -424,8 +421,7 @@ You will see the final job, the post, finish its 48th hour:
     + (( i<=48 ))
 
 
-6. Where is my Output?
-----------------------
+## Section 6: Where is my Output?
 
 1. First, confirm the workflow has finished. See the end of the
 previous section for how to do this.
@@ -466,8 +462,7 @@ you will see a great many files:
 
 
 
-7. Changing the Code
---------------------
+## Section 7: Changing the Code
 
 To do actual development, you want to compile manually instead of
 using the `ufs-srweather-app-Dockerfile`. There is extensive guidance
