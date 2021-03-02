@@ -1,9 +1,12 @@
+# Short-Range Weather App Public Release in Docker
+
 This document explains how to run the SRW public release, version 1,
-in a Docker container. We will run twice: once by building an image,
-and a second time manually.
+in a Docker container. We will run twice: once by building a Docker
+image complete with the application, and a second time building the
+application manually within a pre-existing Docker image.
 
 1. Get Docker
-2. Download the Files - get the premade container and 
+2. Download the Files - get the premade container and input data
 3. Create the Docker Image - compile inside a docker image based on the premade container
 4. Start the Workflow - run the workflow off of the image you created
 5. Monitor the Workflow - look at log files while the workflow runs
@@ -16,8 +19,7 @@ that, you would read the sections in this order instead: 1, 2, 7, 4,
 5, 6
 
 
-1. Get Docker
--------------
+## Section 1: Get Docker
 
 ### Security Risks
 
@@ -28,7 +30,7 @@ is critical, make sure you plan accordingly:
 
 https://docs.docker.com/engine/security/security/
 
-These containers were built and tested in a virtual machine, to fully
+These containers were built and tested in a virtual machine to fully
 isolate Docker from the host. If your machine has hardware
 virtualization support, that is an excellent option. Cloud computing
 providers also use virtualization. Running inside a cloud provider's
@@ -56,8 +58,7 @@ Relevant pages for Ubuntu and RedHat/CentOS:
 
 
 
-2. Download The Files
----------------------
+## Section 2: Download The Files
 
 You need to download seven files.
 
@@ -126,8 +127,7 @@ The files:
        - https://ftp.emc.ncep.noaa.gov/EIB/UFS/SRW/v1p0/simple_test_case/gst_model_data.tar.gz
        - https://ufs-data.s3.amazonaws.com/public_release/ufs-srweather-app-v1.0.0/ic/gst_model_data.tar.gz
 
-3. Create the Docker Image
---------------------------
+## Section 3: Create the Docker Image
 
 1. Put all seven files you downloaded in one directory.
 
@@ -151,11 +151,11 @@ The files:
    set the LAYOUT_X, LAYOUT_Y, RUN_CMD_UTILS, and RUN_CMD_POST
    variables.
 
-3. LOW MEMORY MACHINES - The workflow takes about 16 GB of RAM, on top
-   of the memory your OS and other applications use. If you don't have
-   significantly more than 16 GB of RAM, then use the 4 core config,
-   but reduce the utilities to one MPI rank. Do that by putting this
-   at the end of config.sh:
+3. LOW MEMORY MACHINES - The workflow uses more than 16 GB of memory,
+   on top of the memory your OS and other applications use. If you don't
+   have significantly more than 16 GB of memory (RAM+swap), then use
+   the 4 core config, but reduce the utilities to one MPI rank. Do that by
+   putting this at the end of config.sh:
 
        RUN_CMD_UTILS="mpirun -np 1"
 
@@ -170,7 +170,7 @@ The files:
 
    NOTE: If your machine cannot handle the `.xz` files, then try
    decompressing the file first. If you can't decompress it, download
-   the `.7z` file with 7zip, or the `.gz` file and compress that. On
+   the `.7z` file with 7zip, or the `.gz` file and decompress that. On
    Windows, the `.7z` file is your best bet if you have 7zip
    installed.
 
@@ -185,7 +185,7 @@ The files:
    with a linux-friendly directory path. That means no whitespace or
    special characters.
 
-   export HOST_TEMP_DIR="/home/Crazy Person's Home Directory/ufs"
+   export HOST_TEMP_DIR="/home/example_home_directory/ufs"
    export DOCKER_TEMP_DIR=/tmp/docker
    mkdir $HOST_TEMP_DIR
 
@@ -193,7 +193,7 @@ The files:
    (like Finder, Explorer or tcsh), then substitute with the
    appropriate actions.
 
-7. Decompress the two archives into your `$HOST_TEMP_DIR`. This
+7. Decompress the two data archives into your `$HOST_TEMP_DIR`. This
    command is for a bash console; if you're using something else,
    substitute it with the appropriate actions:
 
@@ -215,8 +215,7 @@ The files:
 9. There should be a $HOST_TEMP_DIR/model_data/FV3GFS/2019061500 directory.
 
 
-4. Start the Workflow
----------------------
+## Section 4: Start the Workflow
 
 1. Start a docker container from the image you just built:
 
@@ -270,8 +269,7 @@ operating system:
 
         [1] 24737
 
-5. Monitor the Workflow
------------------------
+## Section 5: Monitor the Workflow
 
 This section explains several ways to monitor the workflow. If you
 don't want to monitor it in detail, just wait for the workflow to end
@@ -395,6 +393,16 @@ less $DOCKER_TEMP_DIR/log/make_lbcs.log
 Press `q` to exit `less`.
 
 
+### Monitor the post and graphics
+
+The graphics are generated last, after the post. Both the post and the
+graphics put their output in this directory:
+
+    $DOCKER_TEMP_DIR/experiment/test_CONUS_25km_GFSv15p2/2019061500/postprd
+
+The post produces `*.grib2` files, and the graphics scripts make
+`*.png` files.
+
 
 ### Is it done?
 
@@ -402,30 +410,22 @@ To check if the workflow finished, look at the end of the run_all.log file:
 
     tail run_all.log
 
-You will see the final job, the post, finish its 48th hour:
+After the last job finishes, the graphics, you will see a message like this:
 
-    ========================================================================
-    Post-processing for forecast hour 048 completed successfully.
-    
-    Exiting script:  "exregional_run_post.sh"
-    In directory:    "/usr/local/src/ufs-srweather-app/regional_workflow/scripts"
-    ========================================================================
-    + print_info_msg '
-    ========================================================================
-    Exiting script:  "JREGIONAL_RUN_POST"
-    In directory:    "/usr/local/src/ufs-srweather-app/regional_workflow/jobs"
-    ========================================================================'
-    
-    ========================================================================
-    Exiting script:  "JREGIONAL_RUN_POST"
-    In directory:    "/usr/local/src/ufs-srweather-app/regional_workflow/jobs"
-    ========================================================================
-    + (( i++  ))
-    + (( i<=48 ))
+    Done.
+   
+    The model ran here:
+    "  " $DOCKER_TEMP_DIR/experiment/test_CONUS_25km_GFSv15p2/2019061500
+   
+    GRIB2 files and plots are in the postprd subdirectory:
+    "  " $DOCKER_TEMP_DIR/experiment/test_CONUS_25km_GFSv15p2/2019061500/postprd
+   
+    Enjoy.
+
+The `$DOCKER_TEMP_DIR` will be replaced with whatever directory you chose.
 
 
-6. Where is my Output?
-----------------------
+## Section 6: Where is my Output?
 
 1. First, confirm the workflow has finished. See the end of the
 previous section for how to do this.
@@ -461,17 +461,20 @@ you will see a great many files:
    - phyf001.nc through phyf048.nc - these are model output physics variables
    - INPUT/ - model input state
    - postprd/*.grib2 - post-processed files with many diagnostics, in GRIB2 format
+   - postprd/*.png - graphics generated from the GRIB2 files
    - for_ICS - initial conditions from FV3 GFS
    - for_LBCS - boundary conditions from FV3 GFS
 
 
 
-7. Changing the Code
---------------------
+## Section 7: Changing the Code
 
 To do actual development, you want to compile manually instead of
 using the `ufs-srweather-app-Dockerfile`. There is extensive guidance
-elsewhere on how to modify and run the model. To do this inside
+available for the UFS Short-Range Weather Application
+(https://ufs-srweather-app.readthedocs.io/en/ufs-v1.0.0) and the
+UFS Weather Model (https://ufs-weather-model.readthedocs.io/en/ufs-v2.0.0)
+on how to modify and run the model. To do this inside
 Docker, you need to build the model manually.
 
 1. Pick a directory on the host machine that will contain your source code.
@@ -514,7 +517,7 @@ you need the `--login` option to bash:
 
        module load cmake
        module load gcc
-       module load NCEPLIBS/srw-release
+       module load NCEPLIBS/2.0.0
        module use /usr/local/modules
        module load esmf/8.0.0
        module load jasper/1.900.1
