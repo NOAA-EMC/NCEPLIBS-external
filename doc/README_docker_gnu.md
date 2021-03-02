@@ -1,11 +1,12 @@
 # Short-Range Weather App Public Release in Docker
 
 This document explains how to run the SRW public release, version 1,
-in a Docker container. We will run twice: once by building an image,
-and a second time manually.
+in a Docker container. We will run twice: once by building a Docker
+image complete with the application, and a second time building the
+application manually within a pre-existing Docker image.
 
 1. Get Docker
-2. Download the Files - get the premade container and 
+2. Download the Files - get the premade container and input data
 3. Create the Docker Image - compile inside a docker image based on the premade container
 4. Start the Workflow - run the workflow off of the image you created
 5. Monitor the Workflow - look at log files while the workflow runs
@@ -29,7 +30,7 @@ is critical, make sure you plan accordingly:
 
 https://docs.docker.com/engine/security/security/
 
-These containers were built and tested in a virtual machine, to fully
+These containers were built and tested in a virtual machine to fully
 isolate Docker from the host. If your machine has hardware
 virtualization support, that is an excellent option. Cloud computing
 providers also use virtualization. Running inside a cloud provider's
@@ -150,10 +151,10 @@ The files:
    set the LAYOUT_X, LAYOUT_Y, RUN_CMD_UTILS, and RUN_CMD_POST
    variables.
 
-3. LOW MEMORY MACHINES - The workflow used more than 16 GB of RAM, on
-   top of the memory your OS and other applications use. If you don't
-   have significantly more than 16 GB of RAM, then use the 4 core
-   config, but reduce the utilities to one MPI rank. Do that by
+3. LOW MEMORY MACHINES - The workflow uses more than 16 GB of memory,
+   on top of the memory your OS and other applications use. If you don't
+   have significantly more than 16 GB of memory (RAM+swap), then use
+   the 4 core config, but reduce the utilities to one MPI rank. Do that by
    putting this at the end of config.sh:
 
        RUN_CMD_UTILS="mpirun -np 1"
@@ -169,7 +170,7 @@ The files:
 
    NOTE: If your machine cannot handle the `.xz` files, then try
    decompressing the file first. If you can't decompress it, download
-   the `.7z` file with 7zip, or the `.gz` file and compress that. On
+   the `.7z` file with 7zip, or the `.gz` file and decompress that. On
    Windows, the `.7z` file is your best bet if you have 7zip
    installed.
 
@@ -184,7 +185,7 @@ The files:
    with a linux-friendly directory path. That means no whitespace or
    special characters.
 
-   export HOST_TEMP_DIR="/home/Crazy Person's Home Directory/ufs"
+   export HOST_TEMP_DIR="/home/example_home_directory/ufs"
    export DOCKER_TEMP_DIR=/tmp/docker
    mkdir $HOST_TEMP_DIR
 
@@ -192,7 +193,7 @@ The files:
    (like Finder, Explorer or tcsh), then substitute with the
    appropriate actions.
 
-7. Decompress the two archives into your `$HOST_TEMP_DIR`. This
+7. Decompress the two data archives into your `$HOST_TEMP_DIR`. This
    command is for a bash console; if you're using something else,
    substitute it with the appropriate actions:
 
@@ -466,7 +467,10 @@ you will see a great many files:
 
 To do actual development, you want to compile manually instead of
 using the `ufs-srweather-app-Dockerfile`. There is extensive guidance
-elsewhere on how to modify and run the model. To do this inside
+available for the UFS Short-Range Weather Application
+(https://ufs-srweather-app.readthedocs.io/en/ufs-v1.0.0) and the
+UFS Weather Model (https://ufs-weather-model.readthedocs.io/en/ufs-v2.0.0)
+on how to modify and run the model. To do this inside
 Docker, you need to build the model manually.
 
 1. Pick a directory on the host machine that will contain your source code.
@@ -509,7 +513,7 @@ you need the `--login` option to bash:
 
        module load cmake
        module load gcc
-       module load NCEPLIBS/srw-release
+       module load NCEPLIBS/2.0.0
        module use /usr/local/modules
        module load esmf/8.0.0
        module load jasper/1.900.1
