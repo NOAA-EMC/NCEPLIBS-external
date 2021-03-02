@@ -393,6 +393,16 @@ less $DOCKER_TEMP_DIR/log/make_lbcs.log
 Press `q` to exit `less`.
 
 
+### Monitor the post and graphics
+
+The graphics are generated last, after the post. Both the post and the
+graphics put their output in this directory:
+
+    $DOCKER_TEMP_DIR/experiment/test_CONUS_25km_GFSv15p2/2019061500/postprd
+
+The post produces `*.grib2` files, and the graphics scripts make
+`*.png` files.
+
 
 ### Is it done?
 
@@ -400,26 +410,19 @@ To check if the workflow finished, look at the end of the run_all.log file:
 
     tail run_all.log
 
-You will see the final job, the post, finish its 48th hour:
+After the last job finishes, the graphics, you will see a message like this:
 
-    ========================================================================
-    Post-processing for forecast hour 048 completed successfully.
-    
-    Exiting script:  "exregional_run_post.sh"
-    In directory:    "/usr/local/src/ufs-srweather-app/regional_workflow/scripts"
-    ========================================================================
-    + print_info_msg '
-    ========================================================================
-    Exiting script:  "JREGIONAL_RUN_POST"
-    In directory:    "/usr/local/src/ufs-srweather-app/regional_workflow/jobs"
-    ========================================================================'
-    
-    ========================================================================
-    Exiting script:  "JREGIONAL_RUN_POST"
-    In directory:    "/usr/local/src/ufs-srweather-app/regional_workflow/jobs"
-    ========================================================================
-    + (( i++  ))
-    + (( i<=48 ))
+    Done.
+   
+    The model ran here:
+    "  " $DOCKER_TEMP_DIR/experiment/test_CONUS_25km_GFSv15p2/2019061500
+   
+    GRIB2 files and plots are in the postprd subdirectory:
+    "  " $DOCKER_TEMP_DIR/experiment/test_CONUS_25km_GFSv15p2/2019061500/postprd
+   
+    Enjoy.
+
+The `$DOCKER_TEMP_DIR` will be replaced with whatever directory you chose.
 
 
 ## Section 6: Where is my Output?
@@ -458,6 +461,7 @@ you will see a great many files:
    - phyf001.nc through phyf048.nc - these are model output physics variables
    - INPUT/ - model input state
    - postprd/*.grib2 - post-processed files with many diagnostics, in GRIB2 format
+   - postprd/*.png - graphics generated from the GRIB2 files
    - for_ICS - initial conditions from FV3 GFS
    - for_LBCS - boundary conditions from FV3 GFS
 
