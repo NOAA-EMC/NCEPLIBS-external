@@ -75,6 +75,7 @@ if(BUILD_MPI)
 else()
   set(MPI_DETERMINE_LIBRARY_VERSION true)
   find_package(MPI REQUIRED)
+  add_custom_target(mpi)
 endif()
 
 if(NOT DEFINED MPITYPE AND BUILD_ESMF)
@@ -159,6 +160,7 @@ if(BUILD_NETCDF)
     #TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
     DEPENDS zlib
     DEPENDS szip
+    DEPENDS mpi
     )
 
   # configure NetCDF configure script with installation locations of HDF, install location, etc
@@ -330,7 +332,6 @@ if(BUILD_ESMF)
   endif()
 
   if(NOT BUILD_MPI)
-    add_custom_target(mpi)
     set(ESMF_PATH $ENV{PATH})
   else()
     set(ESMF_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}")
