@@ -9,3 +9,7 @@ conflict netcdf
 
 # Set environment variables
 setenv NETCDF ${CMAKE_INSTALL_PREFIX}
+<<<<<<< HEAD
+=======
+prepend-path PATH ${CMAKE_INSTALL_PREFIX}/bin
+>>>>>>> remotes/origin/release/public-v2

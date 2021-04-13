@@ -1,7 +1,3 @@
-##########################################################################################
-# TODO: NEEDS UPDATE TO WORK WITH DEVELOP BRANCHES OF NCEPLIBS-EXTERNAL AND NCEPLIBS     #
-##########################################################################################
-
 Setup instructions for macOS Mojave or Catalina using clang-10.0.0 + gfortran-10.2.0
 
 The following instructions were tested on a clean macOS systems (Mojave 10.14.6 and Catalina 10.15.6).
@@ -10,7 +6,7 @@ are required for the subsequent steps, as well as for building NCEPLIBS-external
 
 Note that 16GB of memory are required for running the UFS weather model at C96 resolution.
 
-1. Install homebrew, the LLVM/GNU compilers and other utilities
+1. Install homebrew, the LLVM/GNU compilers and other utilities:
 
 (1) Install homebrew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -20,10 +16,12 @@ open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10
 
 (2) Create directories
 sudo su
-mkdir /usr/local/ufs-develop
-chown YOUR_USERNAME:YOUR_GROUPNAME /usr/local/ufs-develop
+export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
+mkdir ${INSTALL_PREFIX}
+chown YOUR_USERNAME:YOUR_GROUPNAME ${INSTALL_PREFIX}
 exit
-cd /usr/local/ufs-develop
+export INSTALL_PREFIX=/usr/local/NCEPLIBS-ufs-v2.0.0
+cd ${INSTALL_PREFIX}
 mkdir src
 
 (3) Install gcc-10.2.0/gfortran-10.2.0
@@ -34,8 +32,10 @@ brew install gcc@10
 
 brew install llvm@10
 
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/local/opt/llvm@10/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm@10/lib:$LD_LIBRARY_PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm@10/include"
+export LDFLAGS="-L/usr/local/opt/llvm@10/lib -Wl,-rpath,/usr/local/opt/llvm@10/lib"
 
 export CC=clang
 export FC=gfortran
@@ -63,58 +63,75 @@ The user is referred to the top-level README.md for more detailed instructions o
 NCEPLIBS-external and configure it (e.g., how to turn off building certain packages such as MPI etc).
 The default configuration assumes that all dependencies are built and installed: MPI, netCDF, ...
 
-cd /usr/local/ufs-develop/src
-git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
+cd ${INSTALL_PREFIX}/src
+git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-external
 cd NCEPLIBS-external
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-# no make install needed
 
 
-3. Install NCEPLIBS - CURRENTLY BROKEN, STOP HERE. NEED TO ADD FORTRAN COMPILER FLAGS FOR GFORTRAN-10 SIMILAR TO WHAT WAS DONE FOR THE RELEASE/PUBLIC-V1 BRANCH; SEE ISSUE https://github.com/NOAA-EMC/NCEPLIBS/issues/106
-
-### FILE NEEDS UPDATE FROM HERE ON ###
+3. Install NCEPLIBS
 
 The user is referred to the top-level README.md of the NCEPLIBS GitHub repository
 (https://github.com/NOAA-EMC/NCEPLIBS/) for more detailed instructions on how to configure
 and build NCEPLIBS. The default configuration assumes that all dependencies were built
 by NCEPLIBS-external as described above.
 
-cd /usr/local/ufs-develop/src
-git clone -b develop --recursive https://github.com/NOAA-EMC/NCEPLIBS
+cd ${INSTALL_PREFIX}/src
+git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
 cd NCEPLIBS
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ufs-develop -DCMAKE_PREFIX_PATH=/usr/local/ufs-develop .. 2>&1 | tee log.cmake
+mkdir build && cd build
+export ESMFMKFILE=${INSTALL_PREFIX}/lib/esmf.mk
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${INSTALL_PREFIX} -DOPENMP=ON .. 2>&1 | tee log.cmake
 make -j8 2>&1 | tee log.make
-# no make install needed
+make deploy 2>&1 | tee log.deploy
 
 
 - END OF THE SETUP INSTRUCTIONS -
 
 
 The following instructions are for building the ufs-weather-model (standalone;
-not the ufs-mrweather app - for the latter, the model is built by the workflow)
+not the UFS applications - for the latter, the model is built by the workflow)
 with those libraries installed.
 
 This is separate from NCEPLIBS-external and NCEPLIBS, and details on how to get
 the code are provided here: https://github.com/ufs-community/ufs-weather-model/wiki
 
+git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
+
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
-
-export CC=clang-9
-export FC=gfortran-9
-export CXX=clang++-9
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/opt/llvm/lib:$LD_LIBRARY_PATH"
+export PATH="/usr/local/opt/llvm@10/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/opt/llvm@10/lib:$LD_LIBRARY_PATH"
+export CPPFLAGS="-I/usr/local/opt/llvm@10/include"
+export LDFLAGS="-L/usr/local/opt/llvm@10/lib -Wl,-rpath,/usr/local/opt/llvm@10/lib"
+source /usr/local/NCEPLIBS-ufs-v2.0.0/bin/setenv_nceplibs.sh
 ulimit -S -s unlimited
-. /usr/local/ufs-develop/bin/setenv_nceplibs.sh
+
+
 export CMAKE_Platform=macosx.gnu
 ./build.sh 2>&1 | tee build.log
 
-Note. OpenMP support is currently broken with the clang compiler. The UFS models should detect that
-the clang compiler is used and turn off threading when building the model.
+Note. OpenMP support is currently broken with the clang compiler. The UFS models should
+detect that the clang compiler is used and turn off threading when building the model.
 
+
+4. Install Python packages for the UFS SRW Application (regional workflow, plotting)
+
+The suggested approach is to install the Python miniconda3 distribution and the necessary Python modules. It is possible to skip the automatic conda initialization in `.bash_profile` and instead run the conda init command by hand or create a script to source.
+
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh
+# init conda or create script to source that contains the following line, unless conda init is added to .bash_profile
+eval "$(/path/to/your/conda/installation/bin/conda shell.bash hook)"
+conda create --name regional_workflow
+conda activate regional_workflow
+conda install -c conda-forge f90nml
+conda install jinja2
+conda install pyyaml
+conda install cartopy
+conda install matplotlib
+conda install scipy
+conda install -c conda-forge pygrib

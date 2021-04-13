@@ -1,20 +1,29 @@
-Setup instructions for NOAA RDHPC Hera using gnu-9.2.0
+Setup instructions for NOAA WCOSS DELL machine using Intel-18.0.1.163
 
+NOTE: set "export INSTALL_PREFIX=..." as required for your installation
+
+export INSTALL_PREFIX=/usrx/local/nceplibs/dev/NCEPLIBS/cmake/install/NCEPLIBS
+
+. /usrx/local/prod/lmod/lmod/init/sh
 module purge
-module load gnu/9.2.0
-module use -a /scratch1/BMC/gmtb/software/modulefiles/gnu-9.2.0/mpich-3.3.2
-module load mpich/3.3.2
-module load cmake/3.16.1
+module load EnvVars/1.0.3
+module load ips/18.0.1.163
+module load impi/18.0.1
+module load lsf/10.1
+module load cmake/3.16.2
 module li
 
-> Currently Loaded Modules:
->   1) gnu/9.2.0   2) mpich/3.3.2   3) cmake/3.16.1
+# Currently Loaded Modules:
+#    1) EnvVars/1.0.3   2) ips/18.0.1.163   3) impi/18.0.1   4) lsf/10.1   5) cmake/3.16.2
 
-export CC=gcc
-export CXX=g++
-export FC=gfortran
+export CC=icc
+export CXX=icpc
+export FC=ifort
 
-export INSTALL_PREFIX=/scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v2.0.0/gnu-9.2.0/mpich-3.3.2
+export CMAKE_C_COMPILER=mpiicc
+export CMAKE_CXX_COMPILER=mpiicpc
+export CMAKE_Fortran_COMPILER=mpiifort
+export CMAKE_Platform=wcoss_dell_p3
 
 mkdir -p ${INSTALL_PREFIX}/src
 cd ${INSTALL_PREFIX}/src
@@ -23,7 +32,7 @@ git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS-externa
 cd NCEPLIBS-external
 mkdir build && cd build
 cmake -DBUILD_MPI=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} .. 2>&1 | tee log.cmake
-make VERBOSE=1 -j8 2>&1 | tee log.make
+make VERBOSE=1 -j8
 
 cd ${INSTALL_PREFIX}/src
 git clone -b ufs-v2.0.0 --recursive https://github.com/NOAA-EMC/NCEPLIBS
@@ -45,22 +54,29 @@ with those libraries installed.
 This is separate from NCEPLIBS-external and NCEPLIBS, and details on how to get
 the code are provided here: https://github.com/ufs-community/ufs-weather-model/wiki
 
-git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
-
 After checking out the code and changing to the top-level directory of ufs-weather-model,
 the following commands should suffice to build the model.
 
-module purge
-module load gnu/9.2.0
-module use -a /scratch1/BMC/gmtb/software/modulefiles/gnu-9.2.0/mpich-3.3.2
-module load mpich/3.3.2
-module load cmake/3.16.1
+export INSTALL_PREFIX=/usrx/local/nceplibs/dev/NCEPLIBS/cmake/install/NCEPLIBS
 
-module use /scratch1/BMC/gmtb/software/NCEPLIBS-ufs-v2.0.0/gnu-9.2.0/mpich-3.3.2/modules
+git clone -b ufs-v2.0.0 --recursive https://github.com/ufs-community/ufs-weather-model
+cd ufs-weather-model
+
+. /usrx/local/prod/lmod/lmod/init/sh
+module purge
+module load EnvVars/1.0.3
+module load ips/18.0.1.163
+module load impi/18.0.1
+module load lsf/10.1
+module load cmake/3.16.2
+module load python/2.7.14
+
+module use ${INSTALL_PREFIX}/modules
 module load NCEPLIBS/2.0.0
 
-export CMAKE_C_COMPILER=mpicc
-export CMAKE_CXX_COMPILER=mpicxx
-export CMAKE_Fortran_COMPILER=mpif90
-export CMAKE_Platform=hera.gnu
+export CMAKE_C_COMPILER=mpiicc
+export CMAKE_CXX_COMPILER=mpiicpc
+export CMAKE_Fortran_COMPILER=mpiifort
+export CMAKE_Platform=wcoss_dell_p3
+
 ./build.sh 2>&1 | tee build.log
