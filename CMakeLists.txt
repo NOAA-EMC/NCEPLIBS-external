@@ -13,13 +13,12 @@ if(POLICY CMP0074)
 endif(POLICY CMP0074)
 
 # Tell cmake what to build
-option(BUILD_MPI     "Build MPI"               ON )
-option(BUILD_ESMF    "Build ESMF"              ON )
-option(BUILD_NETCDF  "Build NetCDF"            ON )
-option(BUILD_JASPER  "Build Jasper"            ON )
-option(BUILD_PNG     "Build libpng"            ON )
-option(BUILD_WGRIB2  "Build wgrib2"            ON )
-option(DEPLOY        "Deploy modulefiles"      OFF)
+option(BUILD_MPI     "Build MPI"               ON)
+option(BUILD_ESMF    "Build ESMF"              ON)
+option(BUILD_NETCDF  "Build NetCDF"            ON)
+option(BUILD_JASPER  "Build Jasper"            ON)
+option(BUILD_PNG     "Build libpng"            ON)
+option(DEPLOY        "Deploy modulefiles"      ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -29,7 +28,7 @@ if((BUILD_NETCDF OR BUILD_PNG) AND NOT (BUILD_NETCDF AND BUILD_PNG))
   message(FATAL_ERROR "NetCDF and PNG must both be built or both supplied externally")
 endif()
 
-set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "WGRIB2")
+set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG")
 set(libs_to_build)
 foreach(lib ${libs})
   if(BUILD_${lib})
@@ -43,12 +42,6 @@ set(install_path ${CMAKE_INSTALL_PREFIX})
 
 include(ExternalProject)
 include(GNUInstallDirs)
-
-if(NOT EXISTS ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR})
-  file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR})
-endif()
-set(CMAKE_CONFIG_FILE "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/nceplibs-external.cmake.config")
-file(WRITE ${CMAKE_CONFIG_FILE} "# CMake configuration file for NCEPLIBS-external\n")
 
 if(BUILD_MPI)
   if(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU" AND ${CMAKE_Fortran_COMPILER_VERSION} VERSION_GREATER 9.9)
@@ -69,12 +62,16 @@ if(BUILD_MPI)
     INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/mpich/mpich-${MPICH_VERSION} && $(MAKE) install
     )
   set(MPI_ROOT ${CMAKE_INSTALL_PREFIX})
+  set(MPI_C_COMPILER ${CMAKE_INSTALL_PREFIX}/bin/mpicc)
+  set(MPI_CXX_COMPILER ${CMAKE_INSTALL_PREFIX}/bin/mpicxx)
+  set(MPI_Fortran_COMPILER ${CMAKE_INSTALL_PREFIX}/bin/mpif90)
   set(MPI_C_LIBRARY_VERSION_STRING "MPICH")
   set(MPI_C_VERSION_MAJOR "3")
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(MPI_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 else()
   set(MPI_DETERMINE_LIBRARY_VERSION true)
   find_package(MPI REQUIRED)
+  message(${MPI_C_COMPILER})
+  add_custom_target(mpi)
 endif()
 
 if(NOT DEFINED MPITYPE AND BUILD_ESMF)
@@ -106,8 +103,6 @@ if(BUILD_NETCDF OR BUILD_PNG)
     TEST_COMMAND cd ${PROJECT_BINARY_DIR}/zlib/build && make test
     INSTALL_COMMAND $(MAKE) install
     )
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(ZLIB_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 endif()
 
 if(BUILD_NETCDF)
@@ -159,6 +154,7 @@ if(BUILD_NETCDF)
     #TEST_COMMAND cd ${PROJECT_BINARY_DIR}/hdf5/build && make test
     DEPENDS zlib
     DEPENDS szip
+    DEPENDS mpi
     )
 
   # configure NetCDF configure script with installation locations of HDF, install location, etc
@@ -199,9 +195,6 @@ if(BUILD_NETCDF)
     TEST_COMMAND cd ${PROJECT_BINARY_DIR}/netcdf-fortran && $(MAKE) check
     DEPENDS netcdf
     )
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(HDF5_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(NETCDF \"${CMAKE_INSTALL_PREFIX}\")\n")
 else()
   # Find NetCDF
   add_custom_target(netcdf-fortran)
@@ -229,7 +222,6 @@ if(BUILD_PNG)
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     DEPENDS zlib
     )
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(PNG_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 else()
   # Find PNG
   add_custom_target(libpng)
@@ -246,6 +238,7 @@ if(BUILD_JASPER)
     -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
     -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
     -DCMAKE_BUILD_TYPE=RELEASE
+    -DBUILD_STATIC=ON
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/libjpeg
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
     )
@@ -262,39 +255,12 @@ if(BUILD_JASPER)
     INSTALL_COMMAND cd ${PROJECT_BINARY_DIR}/jasper && $(MAKE) install
     DEPENDS libjpeg
     )
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(JPEG_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(Jasper_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 else()
   # Find JPEG and Jasper
   add_custom_target(libjpeg)
   find_package(JPEG)
   add_custom_target(jasper)
   find_package(Jasper REQUIRED)
-endif()
-
-if(BUILD_WGRIB2)
-
-  ExternalProject_Add(wgrib2
-    PREFIX ${PROJECT_BINARY_DIR}/wgrib2
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
-    BINARY_DIR ${PROJECT_BINARY_DIR}/wgrib2
-    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    CMAKE_ARGS
-      -DUSE_NETCDF4=ON
-      -DUSE_IPOLATES=0
-      -DUSE_SPECTRAL=OFF
-      -DMAKE_FTN_API=ON
-      -DUSE_PNG=ON
-      -DUSE_JASPER=ON
-      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-      -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
-      -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
-      -DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}
-      DEPENDS jasper libpng netcdf-fortran
-    )
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(WGRIB2_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
 endif()
 
 if(BUILD_ESMF)
@@ -330,7 +296,6 @@ if(BUILD_ESMF)
   endif()
 
   if(NOT BUILD_MPI)
-    add_custom_target(mpi)
     set(ESMF_PATH $ENV{PATH})
   else()
     set(ESMF_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}:$ENV{PATH}")
@@ -348,8 +313,6 @@ if(BUILD_ESMF)
     #TEST_BEFORE_INSTALL TRUE
     INSTALL_COMMAND ${CMAKE_COMMAND} -E env PATH=${ESMF_PATH} ESMF_DIR=${PROJECT_SOURCE_DIR}/esmf ESMF_COMM=${MPITYPE} ESMF_COMPILER=${comp} ESMF_NETCDF=1 ESMF_NETCDF_INCLUDE=${NETCDF_INCLUDE_DIRS} ESMF_NETCDF_LIBS=${NETCDF_LIBRARIES} ESMF_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} ESMF_INSTALL_HEADERDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR} ESMF_INSTALL_MODDIR=${CMAKE_INSTALL_PREFIX}/mod ESMF_INSTALL_LIBDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} ESMF_INSTALL_BINDIR=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR} ESMF_BOPT=${ESMF_BOPT} ESMF_OPTLEVEL=${ESMF_OPTLEVEL} ESMF_F90COMPILEOPTS=${ESMF_F90COMPILEOPTS} ESMF_CXXCOMPILEOPTS=${ESMF_CXXCOMPILEOPTS} $(MAKE) install
     DEPENDS mpi netcdf-fortran)
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(ESMFMKFILE \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/esmf.mk\")\n")
 endif()
 
 # Option to overwrite modulefile (if DEPLOY = ON)

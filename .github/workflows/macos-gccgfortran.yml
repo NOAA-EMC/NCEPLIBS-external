@@ -17,7 +17,9 @@ jobs:
       run: |
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
         # mpich installs gcc@10 as prerequisite
-        brew install automake coreutils gnu-sed mpich
+        brew install automake coreutils gnu-sed
+        # mpif90 is looking for "gfortran" only
+        ln -sf /usr/local/bin/gfortran-10 /usr/local/bin/gfortran
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -29,6 +31,5 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=OFF
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DBUILD_MPI=ON
         make -j4
-        cat install/share/nceplibs-external.cmake.config
