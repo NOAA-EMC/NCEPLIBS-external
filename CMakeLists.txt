@@ -18,7 +18,6 @@ option(BUILD_ESMF    "Build ESMF"              ON )
 option(BUILD_NETCDF  "Build NetCDF"            ON )
 option(BUILD_JASPER  "Build Jasper"            ON )
 option(BUILD_PNG     "Build libpng"            ON )
-option(BUILD_WGRIB2  "Build wgrib2"            ON )
 option(DEPLOY        "Deploy modulefiles"      OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -29,7 +28,7 @@ if((BUILD_NETCDF OR BUILD_PNG) AND NOT (BUILD_NETCDF AND BUILD_PNG))
   message(FATAL_ERROR "NetCDF and PNG must both be built or both supplied externally")
 endif()
 
-set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG" "WGRIB2")
+set(libs "MPI" "NETCDF" "ESMF" "JASPER" "PNG")
 set(libs_to_build)
 foreach(lib ${libs})
   if(BUILD_${lib})
@@ -273,30 +272,6 @@ else()
   find_package(Jasper REQUIRED)
 endif()
 
-if(BUILD_WGRIB2)
-
-  ExternalProject_Add(wgrib2
-    PREFIX ${PROJECT_BINARY_DIR}/wgrib2
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/wgrib2
-    BINARY_DIR ${PROJECT_BINARY_DIR}/wgrib2
-    INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-    CMAKE_ARGS
-      -DUSE_NETCDF4=ON
-      -DUSE_IPOLATES=0
-      -DUSE_SPECTRAL=OFF
-      -DMAKE_FTN_API=ON
-      -DUSE_PNG=ON
-      -DUSE_JASPER=ON
-      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-      -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
-      -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
-      -DCMAKE_PREFIX_PATH=${CMAKE_INSTALL_PREFIX}
-      DEPENDS jasper libpng netcdf-fortran
-    )
-
-  file(APPEND ${CMAKE_CONFIG_FILE} "set(WGRIB2_ROOT \"${CMAKE_INSTALL_PREFIX}\")\n")
-endif()
-
 if(BUILD_ESMF)
   if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
     set(comp "intel")
@@ -366,10 +341,6 @@ if(DEPLOY)
   if(BUILD_ESMF)
     set(ESMF_VERSION "8.1.0bs21")
     configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/esmf ${CMAKE_INSTALL_PREFIX}/modules/esmf/${ESMF_VERSION})
-  endif()
-  if(BUILD_WGRIB2)
-    set(WGRIB2_VERSION "2.0.8")
-    configure_file(${PROJECT_SOURCE_DIR}/tmplModulefiles/wgrib2 ${CMAKE_INSTALL_PREFIX}/modules/wgrib2/${WGRIB2_VERSION})
   endif()
 
 endif()
