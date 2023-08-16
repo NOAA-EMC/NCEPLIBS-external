@@ -1,6 +1,6 @@
 [submodule "hdf5"]
 	path = hdf5
-	url = https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
+	url = https://github.com/HDFGroup/hdf5.git
 [submodule "jasper"]
 	path = jasper
 	url = https://github.com/mdadams/jasper.git
